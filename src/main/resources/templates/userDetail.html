@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+    <div class="alert alert-primary" role="alert">
+        Welcome back, <span th:text="${savedUser.firstName} +' '+ ${savedUser.lastName}"></span>.
+    </div>
+    <h1>Registration Successful</h1>
+    <p>First Name: <span th:text="${savedUser.firstName}" th:remove="tag"></span></p>
+    <p>Last Name: <span th:text="${savedUser.lastName}" th:remove="tag"></span></p>
+    <p>Address: <span th:text="${savedUser.address}" th:remove="tag"></span></p>
+    <p>Email: <span th:text="${savedUser.email}" th:remove="tag"></span></p>
+    <p>Password: <span th:text="${savedUser.password}" th:remove="tag"></span></p>
+</body>
+</html>

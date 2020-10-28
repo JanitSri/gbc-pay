@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome Back</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+    <div class="alert alert-primary" role="alert"th:if="${validToken}" th:text="${validToken}"></div>
+    <div class="alert alert-danger" role="alert"th:if="${inValidToken}" th:text="${inValidToken}"></div>
+    <h1>Login Page</h1>
+</body>
+</html>
