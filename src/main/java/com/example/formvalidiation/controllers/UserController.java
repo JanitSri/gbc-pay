@@ -1,6 +1,7 @@
 package com.example.formvalidiation.controllers;
 
 import com.example.formvalidiation.models.User;
+import com.example.formvalidiation.services.RegistrationService;
 import com.example.formvalidiation.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +18,11 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
+    private final RegistrationService registrationService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RegistrationService registrationService) {
         this.userService = userService;
+        this.registrationService = registrationService;
     }
 
     @GetMapping({"/", "/register"})
@@ -46,7 +49,7 @@ public class UserController {
         }
 
         user.setEnabled(false);
-        userService.registerNewUser(user);
+        registrationService.registerNewUser(user);
         ra.addFlashAttribute("savedUser", user);
         return "redirect:/detail";
     }
@@ -58,11 +61,11 @@ public class UserController {
 
     @GetMapping("/confirm")
     public String getConfirmMail(@RequestParam("token") String token, RedirectAttributes ra) {
-        if(userService.enableUser(token)){
-            ra.addFlashAttribute("validToken", "Token is Valid");
+        if(registrationService.enableUser(token)){
+            ra.addFlashAttribute("validToken", "Thank you for validating your email.");
             return "redirect:/login";
         }
-        ra.addFlashAttribute("inValidToken", "Token is not Valid");
+        ra.addFlashAttribute("inValidToken", "This validation link is not valid.");
         return "redirect:/login";
     }
 }

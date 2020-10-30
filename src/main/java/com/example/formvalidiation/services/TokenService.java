@@ -25,11 +25,8 @@ public class TokenService {
     }
 
     public Token validateToken(String token){
-        Optional<Token> optionalToken = tokenRepository.findByVerifiedToken(token);
+        Optional<Token> optionalToken = tokenRepository.findByTokenName(token);
 
-        if(optionalToken.isPresent()){
-            return optionalToken.get();
-        }
-        return null;
+        return optionalToken.orElse(null);
     }
 }

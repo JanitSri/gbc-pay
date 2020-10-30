@@ -2,13 +2,9 @@ package com.example.formvalidiation.models;
 
 
 import com.example.formvalidiation.validation.PasswordMatches;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @PasswordMatches(first = "password", second = "confirmPassword", message = "The password fields must match")
 @Entity
@@ -18,19 +14,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "First Name Cannot be Empty")
     @Size(min = 2, max = 25, message = "First Name must between 2 and 25 characters")
     private String firstName;
 
-    @NotBlank(message = "Last Name Cannot be Empty")
     @Size(min = 2, max = 25, message = "Last Name must between 2 and 25 characters")
     private String lastName;
 
-    @NotBlank(message = "Address Cannot be Empty")
     @Size(min = 2, max = 25, message = "Address must between 2 and 25 characters")
     private String address;
 
-    @NotBlank(message = "Email Cannot be Empty")
     @Email(message = "Not valid Email")
     private String email;
 
@@ -42,11 +34,16 @@ public class User {
     @NotBlank(message = "Confirm Password Cannot be Empty")
     private String confirmPassword;
 
+    @Transient
+    @NotNull
+    @AssertTrue(message = "Must agree to terms of service.")
+    private boolean agreedToTerms;
+
     private boolean enabled;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "token_id")
-    private Token validationToken;
+    private Token verificationToken;
 
     public User() {
     }
@@ -124,12 +121,20 @@ public class User {
         this.confirmPassword = confirmPassword;
     }
 
-    public Token getValidationToken() {
-        return validationToken;
+    public Token getVerificationToken() {
+        return verificationToken;
     }
 
-    public void setValidationToken(Token validationToken) {
-        this.validationToken = validationToken;
+    public void setVerificationToken(Token validationToken) {
+        this.verificationToken = validationToken;
+    }
+
+    public boolean isAgreedToTerms() {
+        return agreedToTerms;
+    }
+
+    public void setAgreedToTerms(boolean agreedToTerms) {
+        this.agreedToTerms = agreedToTerms;
     }
 
     @Override

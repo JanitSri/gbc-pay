@@ -58,6 +58,14 @@
                             <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color: red;"></span>
                         </div>
 
+                        <div class="col-md-6 form-group">
+                            <input type="checkbox" class="custom-control-input" id="customCheck" th:field="*{agreedToTerms}">
+                            <label class="custom-control-label" for="customCheck">
+                                I agree to the <a href="#" data-toggle="modal" data-target="#termsModal">terms of service.</a>
+                            </label>
+                            <span th:if="${#fields.hasErrors('agreedToTerms')}" th:errors="*{agreedToTerms}" style="color: red;"></span>
+                        </div>
+
                     </div>
                     <button type="submit" class="btn btn-primary btn-block mt-3">Register</button>
                 </form>

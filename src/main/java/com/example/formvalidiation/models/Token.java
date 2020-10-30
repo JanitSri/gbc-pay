@@ -2,8 +2,6 @@ package com.example.formvalidiation.models;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.UUID;
 
 @Entity
 public class Token {
@@ -12,18 +10,18 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String verifiedToken;
+    private String tokenName;
 
     private LocalDate createdDate;
 
-    @OneToOne(mappedBy = "validationToken")
+    @OneToOne(mappedBy = "verificationToken")
     private User user;
 
     public Token() {
     }
 
     public Token(String verifiedToken, LocalDate createdDate) {
-        this.verifiedToken = verifiedToken;
+        this.tokenName = verifiedToken;
         this.createdDate = createdDate;
     }
 
@@ -35,12 +33,12 @@ public class Token {
         this.id = id;
     }
 
-    public String getVerifiedToken() {
-        return verifiedToken;
+    public String getTokenName() {
+        return tokenName;
     }
 
-    public void setVerifiedToken(String verifiedToken) {
-        this.verifiedToken = verifiedToken;
+    public void setTokenName(String verifiedToken) {
+        this.tokenName = verifiedToken;
     }
 
     public LocalDate getCreatedDate() {
@@ -63,7 +61,7 @@ public class Token {
     public String toString() {
         return "Token{" +
                 "id=" + id +
-                ", verifiedToken='" + verifiedToken + '\'' +
+                ", verifiedToken='" + tokenName + '\'' +
                 ", createdDate=" + createdDate +
                 ", user=" + user +
                 '}';
