@@ -101,10 +101,11 @@ public class AccountController {
 
     @PostMapping("/reset_password")
     public String postResetPassword(@RequestParam("token") String token, @ModelAttribute("user") @Valid User user,
-                                    BindingResult result, RedirectAttributes ra) {
+                                    BindingResult result, RedirectAttributes ra, Model model) {
 
         if(result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")){
-            return "forgot_password";
+            model.addAttribute("emailToken", token);
+            return "reset_password";
         }
 
         if(accountService.resetPassword(user, token)){

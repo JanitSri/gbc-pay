@@ -5,6 +5,9 @@ import com.example.formvalidiation.validation.PasswordMatches;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @PasswordMatches(first = "password", second = "confirmPassword", message = "The password fields must match")
 @Entity
@@ -42,11 +45,11 @@ public class User {
 
     private boolean enabled;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "verificatiotoken_id")
     private VerificationToken verificationToken;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "emailtoken_id")
     private EmailToken emailToken;
 

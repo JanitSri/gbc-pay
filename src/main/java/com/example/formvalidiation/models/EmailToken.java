@@ -4,14 +4,9 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class EmailToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+public class EmailToken extends Token{
 
-    public String tokenName;
-
-    public LocalDate createdDate;
+    private boolean expired;
 
     @OneToOne(mappedBy = "emailToken")
     private User user;
@@ -19,33 +14,9 @@ public class EmailToken {
     public EmailToken() {
     }
 
-    public EmailToken(String tokenName, LocalDate createdDate) {
-        this.tokenName = tokenName;
-        this.createdDate = createdDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTokenName() {
-        return tokenName;
-    }
-
-    public void setTokenName(String tokenName) {
-        this.tokenName = tokenName;
-    }
-
-    public LocalDate getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDate createdDate) {
-        this.createdDate = createdDate;
+    public EmailToken(String tokenName, LocalDate createdDate, boolean expired) {
+        super(tokenName, createdDate);
+        this.expired = expired;
     }
 
     public User getUser() {
@@ -56,28 +27,19 @@ public class EmailToken {
         this.user = user;
     }
 
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
+
     @Override
     public String toString() {
         return "EmailToken{" +
-                "id=" + id +
-                ", tokenName='" + tokenName + '\'' +
-                ", createdDate=" + createdDate +
+                "expired=" + expired +
                 ", user=" + user +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        EmailToken that = (EmailToken) o;
-
-        return id != null ? id.equals(that.id) : that.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
     }
 }

@@ -1,7 +1,9 @@
 package com.example.formvalidiation.services;
 
+import com.example.formvalidiation.models.Token;
 import com.example.formvalidiation.models.VerificationToken;
 import com.example.formvalidiation.models.User;
+import com.example.formvalidiation.repositories.TokenRepository;
 import com.example.formvalidiation.repositories.VerificationTokenRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,7 @@ import java.util.UUID;
 
 @Service
 public class VerificationTokenService {
-    private final VerificationTokenRepository verificationTokenRepository;
+    private final TokenRepository verificationTokenRepository;
 
     public VerificationTokenService(VerificationTokenRepository verificationTokenRepository) {
         this.verificationTokenRepository = verificationTokenRepository;

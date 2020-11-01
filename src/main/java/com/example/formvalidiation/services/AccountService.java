@@ -1,6 +1,7 @@
 package com.example.formvalidiation.services;
 
 import com.example.formvalidiation.models.EmailToken;
+import com.example.formvalidiation.models.Token;
 import com.example.formvalidiation.models.VerificationToken;
 import com.example.formvalidiation.models.User;
 import org.springframework.stereotype.Service;
@@ -58,8 +59,14 @@ public class AccountService {
 
     public void sendResetPasswordLink(User existingUser) throws MessagingException {
         User user = userService.findByEmail(existingUser.getEmail());
+        EmailToken currentToken = user.getEmailToken();
 
-        EmailToken emailToken = emailTokenService.createToken(user);
+        EmailToken emailToken;
+        if(currentToken == null || user.getEmailToken().isExpired()) {
+            emailToken = emailTokenService.createEmailToken(user);
+        }else{
+            emailToken = emailTokenService.validateEmailToken(currentToken.getTokenName());
+        }
 
         user.setEmailToken(emailToken);
         user.setConfirmPassword(user.getPassword());
@@ -69,11 +76,12 @@ public class AccountService {
     }
 
     public boolean resetPassword(User existingUser, String resetToken){
-        EmailToken emailToken = emailTokenService.validateToken(resetToken);
+        EmailToken emailToken = emailTokenService.validateEmailToken(resetToken);
         if(emailToken == null){
             return false;
         }
 
+        emailToken.setExpired(true);
         User user = userService.findByEmail(emailToken.getUser().getEmail());
         user.setPassword(existingUser.getPassword());
         user.setConfirmPassword(existingUser.getConfirmPassword());
