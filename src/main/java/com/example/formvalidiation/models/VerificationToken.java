@@ -4,24 +4,23 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class Token {
-
+public class VerificationToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
-    private String tokenName;
+    public String tokenName;
 
-    private LocalDate createdDate;
+    public LocalDate createdDate;
 
     @OneToOne(mappedBy = "verificationToken")
     private User user;
 
-    public Token() {
+    public VerificationToken() {
     }
 
-    public Token(String verifiedToken, LocalDate createdDate) {
-        this.tokenName = verifiedToken;
+    public VerificationToken(String tokenName, LocalDate createdDate) {
+        this.tokenName = tokenName;
         this.createdDate = createdDate;
     }
 
@@ -29,9 +28,7 @@ public class Token {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
     public String getTokenName() {
         return tokenName;
@@ -72,9 +69,9 @@ public class Token {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Token token = (Token) o;
+        VerificationToken verificationToken = (VerificationToken) o;
 
-        return id != null ? id.equals(token.id) : token.id == null;
+        return id != null ? id.equals(verificationToken.id) : verificationToken.id == null;
     }
 
     @Override

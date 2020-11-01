@@ -23,6 +23,7 @@ public class User {
     @Size(min = 2, max = 25, message = "Address must between 2 and 25 characters")
     private String address;
 
+    @NotBlank(message = "Email cannot be Empty")
     @Email(message = "Not valid Email")
     private String email;
 
@@ -42,8 +43,12 @@ public class User {
     private boolean enabled;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "token_id")
-    private Token verificationToken;
+    @JoinColumn(name = "verificatiotoken_id")
+    private VerificationToken verificationToken;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "emailtoken_id")
+    private EmailToken emailToken;
 
     public User() {
     }
@@ -121,12 +126,20 @@ public class User {
         this.confirmPassword = confirmPassword;
     }
 
-    public Token getVerificationToken() {
+    public VerificationToken getVerificationToken() {
         return verificationToken;
     }
 
-    public void setVerificationToken(Token validationToken) {
-        this.verificationToken = validationToken;
+    public void setVerificationToken(VerificationToken validationVerificationToken) {
+        this.verificationToken = validationVerificationToken;
+    }
+
+    public EmailToken getEmailToken() {
+        return emailToken;
+    }
+
+    public void setEmailToken(EmailToken emailToken) {
+        this.emailToken = emailToken;
     }
 
     public boolean isAgreedToTerms() {
