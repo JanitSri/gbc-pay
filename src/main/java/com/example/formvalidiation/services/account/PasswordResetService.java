@@ -29,20 +29,20 @@ public class PasswordResetService {
 
     public void sendResetPasswordLink(User existingUser) throws MessagingException {
         User user = userService.findByEmail(existingUser.getEmail());
-        PasswordResetToken currentToken = user.getEmailToken();
 
-        PasswordResetToken passwordResetToken;
-        if(currentToken == null || user.getEmailToken().isExpired()) {
-            passwordResetToken = passwordResetTokenService.createToken(user);
-        }else{
-            passwordResetToken = passwordResetTokenService.validateToken(currentToken.getTokenName());
+        PasswordResetToken currentToken = user.getPasswordResetToken()
+                .stream()
+                .filter(passwordResetToken -> !passwordResetToken.isExpired())
+                .findFirst()
+                .orElse(null);
+
+        if(currentToken == null) {
+            currentToken = passwordResetTokenService.createToken(user);
+            user.getPasswordResetToken().add(currentToken);
+            userService.saveUser(user);
         }
 
-        user.setEmailToken(passwordResetToken);
-        userService.saveUser(user);
-
-        MimeMessage email = passwordResetEmail.constructMessage(user, passwordResetToken);
-
+        MimeMessage email = passwordResetEmail.constructMessage(user, currentToken);
         emailService.sendEmail(email);
     }
 
@@ -57,7 +57,6 @@ public class PasswordResetService {
         passwordResetToken.setExpired(true);
         User user = userService.findByEmail(passwordResetToken.getUser().getEmail());
         user.setPassword(existingUser.getPassword());
-        user.setConfirmPassword(existingUser.getConfirmPassword());
         userService.saveUser(user);
 
         return true;

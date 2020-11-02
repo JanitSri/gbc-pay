@@ -8,7 +8,8 @@ public class PasswordResetToken extends Token{
 
     private boolean expired;
 
-    @OneToOne(mappedBy = "passwordResetToken")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public PasswordResetToken() {

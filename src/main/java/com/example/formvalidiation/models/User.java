@@ -5,6 +5,8 @@ import com.example.formvalidiation.validation.PasswordMatches;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @PasswordMatches(first = "password", second = "confirmPassword", message = "The password fields must match")
 @Entity
@@ -45,9 +47,9 @@ public class User {
     @JoinColumn(name = "verificationtoken_id")
     private VerificationToken verificationToken;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "resettoken_id")
-    private PasswordResetToken passwordResetToken;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<PasswordResetToken> passwordResetTokens = new ArrayList<>();
 
     public User() {
     }
@@ -133,12 +135,12 @@ public class User {
         this.verificationToken = validationVerificationToken;
     }
 
-    public PasswordResetToken getEmailToken() {
-        return passwordResetToken;
+    public List<PasswordResetToken> getPasswordResetToken() {
+        return passwordResetTokens;
     }
 
-    public void setEmailToken(PasswordResetToken passwordResetToken) {
-        this.passwordResetToken = passwordResetToken;
+    public void setPasswordResetToken(List<PasswordResetToken> passwordResetTokens) {
+        this.passwordResetTokens = passwordResetTokens;
     }
 
     public boolean isAgreedToTerms() {
