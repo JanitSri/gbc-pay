@@ -23,11 +23,4 @@ public class VerificationToken extends Token{
     public void setUser(User user) {
         this.user = user;
     }
-
-    @Override
-    public String toString() {
-        return "VerificationToken{" +
-                "user=" + user +
-                '}';
-    }
 }

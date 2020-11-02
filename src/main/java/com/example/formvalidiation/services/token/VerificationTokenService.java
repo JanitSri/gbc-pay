@@ -1,6 +1,5 @@
-package com.example.formvalidiation.services;
+package com.example.formvalidiation.services.token;
 
-import com.example.formvalidiation.models.Token;
 import com.example.formvalidiation.models.VerificationToken;
 import com.example.formvalidiation.models.User;
 import com.example.formvalidiation.repositories.TokenRepository;
@@ -12,13 +11,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class VerificationTokenService {
+public class VerificationTokenService extends TokenService<VerificationToken>{
     private final TokenRepository verificationTokenRepository;
 
     public VerificationTokenService(VerificationTokenRepository verificationTokenRepository) {
         this.verificationTokenRepository = verificationTokenRepository;
     }
 
+    @Override
     public VerificationToken createToken(User user){
         final VerificationToken verificationToken = new VerificationToken(UUID.randomUUID().toString(), LocalDate.now());
         verificationToken.setUser(user);
@@ -26,6 +26,7 @@ public class VerificationTokenService {
         return verificationToken;
     }
 
+    @Override
     public VerificationToken validateToken(String verificationToken){
         Optional<VerificationToken> optionalToken = verificationTokenRepository.findByTokenName(verificationToken);
 

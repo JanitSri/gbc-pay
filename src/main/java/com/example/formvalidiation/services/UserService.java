@@ -18,7 +18,6 @@ public class UserService {
         Optional<User> user = userRepository.findByEmailIgnoreCase(email);
 
         return user.orElse(null);
-
     }
 
     public boolean userExists(String email){

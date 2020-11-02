@@ -4,17 +4,17 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class EmailToken extends Token{
+public class PasswordResetToken extends Token{
 
     private boolean expired;
 
-    @OneToOne(mappedBy = "emailToken")
+    @OneToOne(mappedBy = "passwordResetToken")
     private User user;
 
-    public EmailToken() {
+    public PasswordResetToken() {
     }
 
-    public EmailToken(String tokenName, LocalDate createdDate, boolean expired) {
+    public PasswordResetToken(String tokenName, LocalDate createdDate, boolean expired) {
         super(tokenName, createdDate);
         this.expired = expired;
     }
@@ -33,13 +33,5 @@ public class EmailToken extends Token{
 
     public void setExpired(boolean expired) {
         this.expired = expired;
-    }
-
-    @Override
-    public String toString() {
-        return "EmailToken{" +
-                "expired=" + expired +
-                ", user=" + user +
-                '}';
     }
 }

@@ -5,9 +5,6 @@ import com.example.formvalidiation.validation.PasswordMatches;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @PasswordMatches(first = "password", second = "confirmPassword", message = "The password fields must match")
 @Entity
@@ -39,19 +36,18 @@ public class User {
     private String confirmPassword;
 
     @Transient
-    @NotNull
     @AssertTrue(message = "Must agree to terms of service.")
     private boolean agreedToTerms;
 
     private boolean enabled;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "verificatiotoken_id")
+    @JoinColumn(name = "verificationtoken_id")
     private VerificationToken verificationToken;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "emailtoken_id")
-    private EmailToken emailToken;
+    @JoinColumn(name = "resettoken_id")
+    private PasswordResetToken passwordResetToken;
 
     public User() {
     }
@@ -137,12 +133,12 @@ public class User {
         this.verificationToken = validationVerificationToken;
     }
 
-    public EmailToken getEmailToken() {
-        return emailToken;
+    public PasswordResetToken getEmailToken() {
+        return passwordResetToken;
     }
 
-    public void setEmailToken(EmailToken emailToken) {
-        this.emailToken = emailToken;
+    public void setEmailToken(PasswordResetToken passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
     }
 
     public boolean isAgreedToTerms() {

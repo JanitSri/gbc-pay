@@ -1,7 +1,8 @@
 package com.example.formvalidiation.controllers;
 
 import com.example.formvalidiation.models.User;
-import com.example.formvalidiation.services.AccountService;
+import com.example.formvalidiation.services.account.PasswordResetService;
+import com.example.formvalidiation.services.account.RegisterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,10 +18,13 @@ import javax.validation.Valid;
 @Controller
 public class AccountController {
 
-    private final AccountService accountService;
+    private final RegisterService registerService;
+    private final PasswordResetService passwordResetService;
 
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
+    public AccountController(RegisterService registerService, PasswordResetService passwordResetService) {
+
+        this.registerService = registerService;
+        this.passwordResetService = passwordResetService;
     }
 
     @GetMapping({"/", "/register"})
@@ -41,13 +45,13 @@ public class AccountController {
             return "register";
         }
 
-        if(accountService.accountExists(user.getEmail())){
+        if(registerService.accountExists(user.getEmail())){
             model.addAttribute("userExists", "The user already exists");
             return "register";
         }
 
         try {
-            accountService.registerNewUser(user);
+            registerService.registerNewUser(user);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -59,7 +63,7 @@ public class AccountController {
 
     @GetMapping("/confirm")
     public String getConfirmMail(@RequestParam("token") String token, RedirectAttributes ra) {
-        if(accountService.enableUser(token)){
+        if(registerService.enableUser(token)){
             ra.addFlashAttribute("validToken", "Thank you for validating your email.");
             return "redirect:/login";
         }
@@ -79,13 +83,13 @@ public class AccountController {
             return "forgot_password";
         }
 
-        if(!accountService.accountExists(user.getEmail())){
+        if(!registerService.accountExists(user.getEmail())){
             model.addAttribute("invalidAccount", "The account does not exists");
             return "forgot_password";
         }
 
         try {
-            accountService.sendResetPasswordLink(user);
+            passwordResetService.sendResetPasswordLink(user);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -94,7 +98,14 @@ public class AccountController {
     }
 
     @GetMapping("/reset_password")
-    public String getResetPassword(@RequestParam("token") String token, @ModelAttribute("user") User user, Model model) {
+    public String getResetPassword(@RequestParam("token") String token, @ModelAttribute("user") User user, Model model,
+                                   RedirectAttributes ra) {
+
+        if(!passwordResetService.validPasswordResetToken(token)){
+            ra.addFlashAttribute("inValidToken", "This password reset link is not valid.");
+            return "redirect:/login";
+        }
+
         model.addAttribute("emailToken", token);
         return "reset_password";
     }
@@ -108,11 +119,11 @@ public class AccountController {
             return "reset_password";
         }
 
-        if(accountService.resetPassword(user, token)){
+        if(passwordResetService.resetPassword(user, token)){
             ra.addFlashAttribute("validToken", "Your password has been reset. Please login");
             return "redirect:/login";
         }
-        ra.addFlashAttribute("inValidToken", "This password link is not valid.");
+        ra.addFlashAttribute("inValidToken", "This password reset link is not valid.");
         return "redirect:/login";
     }
 }
