@@ -29,7 +29,6 @@ public class PasswordResetTokenService extends TokenService<PasswordResetToken>{
     @Override
     public PasswordResetToken validateToken(String verificationToken){
         Optional<PasswordResetToken> optionalToken = passwordResetTokenRepository.findByTokenName(verificationToken);
-
         return optionalToken.orElse(null);
     }
 }

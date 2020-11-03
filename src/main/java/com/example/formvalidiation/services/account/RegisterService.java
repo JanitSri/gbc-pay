@@ -32,8 +32,9 @@ public class RegisterService {
     }
 
     public void registerNewUser(User newUser) throws MessagingException {
-
+        newUser.setEnabled(false);
         userService.saveUser(newUser);
+
         VerificationToken verificationToken = verificationTokenService.createToken(newUser);
 
         newUser.setVerificationToken(verificationToken);

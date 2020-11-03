@@ -6,10 +6,7 @@ import com.example.formvalidiation.services.account.RegisterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
@@ -38,15 +35,15 @@ public class AccountController {
     }
 
     @PostMapping("/register")
-    public String postRegisterForm(@ModelAttribute("user") @Valid User user, BindingResult result,
-                                   RedirectAttributes ra, Model model){
+    public String postRegisterForm(@ModelAttribute("user") @Valid User user, BindingResult result, Model model,
+            RedirectAttributes ra){
 
         if(result.hasErrors()){
             return "register";
         }
 
         if(registerService.accountExists(user.getEmail())){
-            model.addAttribute("userExists", "The user already exists");
+            model.addAttribute("infoForUser", "The user already exists");
             return "register";
         }
 
@@ -56,18 +53,17 @@ public class AccountController {
             e.printStackTrace();
         }
 
-        user.setEnabled(false);
-        ra.addFlashAttribute("savedUser", user);
-        return "redirect:/detail";
+        ra.addFlashAttribute("successfulRegister", "Registration successful. Please login.");
+        return "redirect:/login";
     }
 
     @GetMapping("/confirm")
     public String getConfirmMail(@RequestParam("token") String token, RedirectAttributes ra) {
         if(registerService.enableUser(token)){
-            ra.addFlashAttribute("validToken", "Thank you for validating your email.");
+            ra.addFlashAttribute("validToken", "Thank you for verifying your email.");
             return "redirect:/login";
         }
-        ra.addFlashAttribute("inValidToken", "This validation link is not valid.");
+        ra.addFlashAttribute("inValidToken", "This verification link is not valid.");
         return "redirect:/login";
     }
 
@@ -77,7 +73,8 @@ public class AccountController {
     }
 
     @PostMapping("/forgot_password")
-    public String sendForgotPassword(@ModelAttribute("user") @Valid User user, BindingResult result, Model model){
+    public String sendForgotPassword(@ModelAttribute("user") @Valid User user, BindingResult result, Model model,
+                                     RedirectAttributes ra){
 
         if(result.hasFieldErrors("email")){
             return "forgot_password";
@@ -94,7 +91,9 @@ public class AccountController {
             e.printStackTrace();
         }
 
-        return "login";
+        ra.addFlashAttribute("forgotPassword", "A password reset link has been sent to " +
+                user.getEmail() + ".");
+        return "redirect:/login";
     }
 
     @GetMapping("/reset_password")

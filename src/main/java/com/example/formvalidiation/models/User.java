@@ -8,7 +8,7 @@ import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@PasswordMatches(first = "password", second = "confirmPassword", message = "The password fields must match")
+@PasswordMatches(first = "password", second = "confirmPassword", message = "Password fields must match")
 @Entity
 public class User {
 
@@ -16,21 +16,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2, max = 25, message = "First Name must between 2 and 25 characters")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "First Name can only contain alphabets")
     private String firstName;
 
-    @Size(min = 2, max = 25, message = "Last Name must between 2 and 25 characters")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "Last Name can only contain alphabets")
     private String lastName;
 
-    @Size(min = 2, max = 25, message = "Address must between 2 and 25 characters")
+    @NotBlank(message = "Address cannot be empty")
     private String address;
 
-    @NotBlank(message = "Email cannot be Empty")
     @Email(message = "Not valid Email")
+    @NotBlank(message = "Email Cannot be Empty")
     private String email;
 
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$",
-            message = "Password must be more than 8 characters, no whitespaces and must contain each of the following; uppercase, lowercase and digit (0-9).")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,12}$",
+            message = "Password must be between 6-12 characters, no whitespace, contain at least 1 uppercase letter and " +
+                    "contain at least 1 special character")
     private String password;
 
     @Transient
@@ -38,7 +39,7 @@ public class User {
     private String confirmPassword;
 
     @Transient
-    @AssertTrue(message = "Must agree to terms of service.")
+    @AssertTrue(message = "Must agree to terms of service")
     private boolean agreedToTerms;
 
     private boolean enabled;

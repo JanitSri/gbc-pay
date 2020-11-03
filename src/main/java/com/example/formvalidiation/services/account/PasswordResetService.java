@@ -27,15 +27,29 @@ public class PasswordResetService {
         this.passwordResetEmail = passwordResetEmail;
     }
 
-    public void sendResetPasswordLink(User existingUser) throws MessagingException {
-        User user = userService.findByEmail(existingUser.getEmail());
+    private PasswordResetToken getPasswordResetTokenByToken(String resetToken){
+        return passwordResetTokenService.validateToken(resetToken);
+    }
 
+    private PasswordResetToken getPasswordResetTokenByUser(User user) {
         PasswordResetToken currentToken = user.getPasswordResetToken()
                 .stream()
                 .filter(passwordResetToken -> !passwordResetToken.isExpired())
                 .findFirst()
                 .orElse(null);
+        return currentToken;
+    }
 
+    public boolean validPasswordResetToken(String resetToken) {
+        PasswordResetToken passwordResetToken = getPasswordResetTokenByToken(resetToken);
+        if (passwordResetToken == null || passwordResetToken.isExpired()) return false;
+        return true;
+    }
+
+    public void sendResetPasswordLink(User existingUser) throws MessagingException {
+        User user = userService.findByEmail(existingUser.getEmail());
+
+        PasswordResetToken currentToken = getPasswordResetTokenByUser(user);
         if(currentToken == null) {
             currentToken = passwordResetTokenService.createToken(user);
             user.getPasswordResetToken().add(currentToken);
@@ -46,25 +60,17 @@ public class PasswordResetService {
         emailService.sendEmail(email);
     }
 
-    private PasswordResetToken getPasswordResetToken(String resetToken){
-        return passwordResetTokenService.validateToken(resetToken);
-    }
-
     public boolean resetPassword(User existingUser, String resetToken){
-        PasswordResetToken passwordResetToken = getPasswordResetToken(resetToken);
-        if (passwordResetToken == null) return false;
+
+        if (!validPasswordResetToken(resetToken)) return false;
+
+        PasswordResetToken passwordResetToken = getPasswordResetTokenByToken(resetToken);
 
         passwordResetToken.setExpired(true);
         User user = userService.findByEmail(passwordResetToken.getUser().getEmail());
         user.setPassword(existingUser.getPassword());
         userService.saveUser(user);
 
-        return true;
-    }
-
-    public boolean validPasswordResetToken(String resetToken) {
-        PasswordResetToken passwordResetToken = getPasswordResetToken(resetToken);
-        if (passwordResetToken == null) return false;
         return true;
     }
 }
