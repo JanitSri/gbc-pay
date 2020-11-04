@@ -35,7 +35,7 @@ public class User {
     private String password;
 
     @Transient
-    @NotBlank(message = "Confirm Password Cannot be Empty")
+    @NotBlank(message = "Confirm Password cannot be empty")
     private String confirmPassword;
 
     @Transient

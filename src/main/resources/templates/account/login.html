@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head.html :: head('Login', 'Login to use the secure GBC Pay application.')"></head>
+<head>
+  <th:block th:insert="fragments/head.html :: head('Login','Login to use the secure GBC Pay application.')"></th:block>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
 
 <body class="bg-gradient-primary">
   <div class="container">

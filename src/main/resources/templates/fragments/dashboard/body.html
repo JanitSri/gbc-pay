@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body id="page-top" th:fragment="bodyContent(content)">
+    <div id="wrapper">
+        <div th:replace="fragments/dashboard/sidebar.html :: sidebar"></div>
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <div th:replace="fragments/dashboard/topbar.html :: topbar(currentUser=${session.currentUser})"></div>
+                    <th:block th:replace="${content}" />
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
