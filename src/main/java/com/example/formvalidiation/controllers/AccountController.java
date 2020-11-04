@@ -7,9 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -24,27 +26,40 @@ public class AccountController {
         this.passwordResetService = passwordResetService;
     }
 
-    @GetMapping({"/", "/register"})
+    @GetMapping({"/", "/login.html", "/login"})
+    public String getLogin(){
+        return "account/login";
+    }
+
+    @PostMapping({"/", "/login.html", "/login"})
+    public String postLogin(HttpSession session){
+        session.setAttribute("currentUser", "Janit");
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping({"/logout.html", "/logout"})
+    public String getLogout(HttpSession session, SessionStatus status){
+        status.setComplete();
+        session.invalidate();
+        return "account/login";
+    }
+
+    @GetMapping({"/register.html", "/register"})
     public String getRegisterForm(@ModelAttribute("user") User user){
-        return "register";
+        return "account/register";
     }
 
-    @GetMapping("/login")
-    public String getLogin(@ModelAttribute("user") User user){
-        return "login";
-    }
-
-    @PostMapping("/register")
+    @PostMapping({"/register.html", "/register"})
     public String postRegisterForm(@ModelAttribute("user") @Valid User user, BindingResult result, Model model,
             RedirectAttributes ra){
 
         if(result.hasErrors()){
-            return "register";
+            return "account/register";
         }
 
         if(registerService.accountExists(user.getEmail())){
-            model.addAttribute("infoForUser", "The user already exists");
-            return "register";
+            model.addAttribute("infoForUser", "The user already exists.");
+            return "account/register";
         }
 
         try {
@@ -57,7 +72,7 @@ public class AccountController {
         return "redirect:/login";
     }
 
-    @GetMapping("/confirm")
+    @GetMapping({"/confirm.html", "/confirm"})
     public String getConfirmMail(@RequestParam("token") String token, RedirectAttributes ra) {
         if(registerService.enableUser(token)){
             ra.addFlashAttribute("validToken", "Thank you for verifying your email.");
@@ -67,22 +82,22 @@ public class AccountController {
         return "redirect:/login";
     }
 
-    @GetMapping("/forgot_password")
+    @GetMapping({"/forgot_password.html", "/forgot_password"})
     public String getForgotPassword(@ModelAttribute("user") User user){
-        return "forgot_password";
+        return "account/forgot_password";
     }
 
-    @PostMapping("/forgot_password")
+    @PostMapping({"/forgot_password.html", "/forgot_password"})
     public String sendForgotPassword(@ModelAttribute("user") @Valid User user, BindingResult result, Model model,
                                      RedirectAttributes ra){
 
         if(result.hasFieldErrors("email")){
-            return "forgot_password";
+            return "account/forgot_password";
         }
 
         if(!registerService.accountExists(user.getEmail())){
-            model.addAttribute("invalidAccount", "The account does not exists");
-            return "forgot_password";
+            model.addAttribute("invalidAccount", "The account does not exists.");
+            return "account/forgot_password";
         }
 
         try {
@@ -96,7 +111,7 @@ public class AccountController {
         return "redirect:/login";
     }
 
-    @GetMapping("/reset_password")
+    @GetMapping({"/reset_password.html", "/reset_password"})
     public String getResetPassword(@RequestParam("token") String token, @ModelAttribute("user") User user, Model model,
                                    RedirectAttributes ra) {
 
@@ -106,20 +121,20 @@ public class AccountController {
         }
 
         model.addAttribute("emailToken", token);
-        return "reset_password";
+        return "account/reset_password";
     }
 
-    @PostMapping("/reset_password")
+    @PostMapping({"/reset_password.html", "/reset_password"})
     public String postResetPassword(@RequestParam("token") String token, @ModelAttribute("user") @Valid User user,
                                     BindingResult result, RedirectAttributes ra, Model model) {
 
         if(result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")){
             model.addAttribute("emailToken", token);
-            return "reset_password";
+            return "account/reset_password";
         }
 
         if(passwordResetService.resetPassword(user, token)){
-            ra.addFlashAttribute("validToken", "Your password has been reset. Please login");
+            ra.addFlashAttribute("validToken", "Your password has been reset. Please login.");
             return "redirect:/login";
         }
         ra.addFlashAttribute("inValidToken", "This password reset link is not valid.");

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head('Tab 2', 'Tab 2 of GBC Pay.')"></head>
+<body id="page-top">
+<div id="wrapper">
+  <div th:replace="fragments/dashboard/sidebar.html :: sidebar"></div>
+  <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+      <div th:replace="fragments/dashboard/topbar.html :: topbar(currentUser=${session.currentUser})"></div>
+
+      <div class="container-fluid">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+          <h1 class="h3 mb-0 text-gray-800">Future Enhancement</h1>
+        </div>
+        <img style="position: relative; max-width: 100%; height: auto; padding-left: 20%; padding-top: 5%;"
+             th:src="@{/assets/construction.jpg}" alt="under construction">
+        <div class="row">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+<div th:replace="fragments/dashboard/logout.html :: logout"></div>
+<div th:replace="fragments/dashboard/scripts.html :: script"></div>
+</body>
+</html>

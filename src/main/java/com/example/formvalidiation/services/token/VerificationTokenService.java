@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Service
 public class VerificationTokenService extends TokenService<VerificationToken>{
-    private final TokenRepository verificationTokenRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     public VerificationTokenService(VerificationTokenRepository verificationTokenRepository) {
         this.verificationTokenRepository = verificationTokenRepository;

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" th:fragment="sidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/dashboard}">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">GBC Pay</div>
+        </a>
+
+        <hr class="sidebar-divider my-0">
+
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/tab1' ? 'active':''}">
+            <a class="nav-link" th:href="@{/dashboard/tab1}">
+                <i class="fas fa-folder"></i>
+                <span>Tab 1</span></a>
+        </li>
+
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/tab2' ? 'active':''}">
+            <a class="nav-link" th:href="@{/dashboard/tab2}">
+                <i class="fas fa-cogs"></i>
+                <span>Tab 2</span></a>
+        </li>
+
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/tab3' ? 'active':''}">
+            <a class="nav-link" th:href="@{/dashboard/tab3}">
+                <i class="fas fa-table"></i>
+                <span>Tab 3</span></a>
+        </li>
+
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/tab4' ? 'active':''}">
+            <a class="nav-link" th:href="@{/dashboard/tab4}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Tab 4</span></a>
+        </li>
+
+        <hr class="sidebar-divider d-none d-md-block">
+    </ul>
+</html>

@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head.html :: head('Login', 'Login to use the secure GBC payment.')">
-</head>
+<head th:replace="fragments/head.html :: head('Login', 'Login to use the secure GBC Pay application.')"></head>
 
 <body class="bg-gradient-primary">
-
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-xl-10 col-lg-12 col-md-9">
@@ -22,7 +20,7 @@
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                   </div>
-                  <form class="user" th:action="@{/login}" method="get">
+                  <form class="user" th:action="@{/login}" method="post">
                     <div class="form-group">
                       <input type="email" class="form-control form-control-user" placeholder="Enter Email Address...">
                     </div>
@@ -52,8 +50,6 @@
       </div>
     </div>
   </div>
-
   <div th:replace="fragments/scripts.html :: script"></div>
-
 </body>
 </html>

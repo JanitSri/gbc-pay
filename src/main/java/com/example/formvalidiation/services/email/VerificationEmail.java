@@ -3,6 +3,7 @@ package com.example.formvalidiation.services.email;
 import com.example.formvalidiation.models.Token;
 import com.example.formvalidiation.models.User;
 import com.example.formvalidiation.models.VerificationToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -13,6 +14,9 @@ public class VerificationEmail extends Email<VerificationToken> {
 
     private final EmailService emailService;
 
+    @Value("${server.port}")
+    private int portNumber;
+
     public VerificationEmail(EmailService emailService) {
         this.emailService = emailService;
     }
@@ -22,9 +26,9 @@ public class VerificationEmail extends Email<VerificationToken> {
         final String message = String.format("<h1>Thank you for registering!</h1>" +
                 "  <p>Name: %s %s</p>" +
                 "  <p>Email: %s</p>" +
-                "  <p>Please click <a href=\"http://localhost:8080/confirm?token=%s\"><strong>" +
+                "  <p>Please click <a href=\"http://localhost:%d/confirm?token=%s\"><strong>" +
                 "here</strong></a> to verify your account </p>", user.getFirstName(), user.getLastName(),
-                user.getEmail(), token.getTokenName());
+                user.getEmail(), portNumber, token.getTokenName());
 
         String verificationHeader = "Financial Dashboard Confirmation Link!";
 
