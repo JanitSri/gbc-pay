@@ -6,7 +6,8 @@ import java.time.LocalDate;
 @Entity
 public class VerificationToken extends Token{
 
-    @OneToOne(mappedBy = "verificationToken")
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public VerificationToken() {

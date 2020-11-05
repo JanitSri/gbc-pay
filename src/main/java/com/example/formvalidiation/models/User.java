@@ -44,8 +44,8 @@ public class User {
 
     private boolean enabled;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "verificationtoken_id")
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationToken verificationToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,

@@ -9,14 +9,15 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class PasswordResetTokenService extends TokenService<PasswordResetToken>{
-    private final TokenRepository<PasswordResetToken> tokenRepository;
+    private final TokenRepository tokenRepository;
 
-    public PasswordResetTokenService(@Qualifier("passwordResetTokenRepository") TokenRepository<PasswordResetToken> tokenRepository) {
+    public PasswordResetTokenService(@Qualifier("passwordResetTokenRepository") TokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
     }
 
@@ -32,5 +33,14 @@ public class PasswordResetTokenService extends TokenService<PasswordResetToken>{
     public PasswordResetToken validateToken(String verificationToken){
         Optional<PasswordResetToken> optionalToken = tokenRepository.findByTokenName(verificationToken);
         return optionalToken.orElse(null);
+    }
+
+    public PasswordResetToken getByUser(User user){
+        List<PasswordResetToken> tokens = tokenRepository.findByUser(user);
+        PasswordResetToken token = tokens.stream()
+                .filter(passwordResetToken -> !passwordResetToken.isExpired())
+                .findFirst()
+                .orElse(null);
+        return token;
     }
 }

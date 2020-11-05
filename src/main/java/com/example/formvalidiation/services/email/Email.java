@@ -7,6 +7,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-abstract class Email<T extends Token> {
-    public abstract MimeMessage constructMessage(User user, T token) throws MessagingException;
+public interface Email<T extends Token> {
+    MimeMessage constructMessage(User user, T token) throws MessagingException;
 }

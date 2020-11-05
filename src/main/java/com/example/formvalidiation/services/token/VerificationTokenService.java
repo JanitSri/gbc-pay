@@ -13,9 +13,9 @@ import java.util.UUID;
 
 @Service
 public class VerificationTokenService extends TokenService<VerificationToken>{
-    private final TokenRepository<VerificationToken> tokenRepository;
+    private final TokenRepository tokenRepository;
 
-    public VerificationTokenService(@Qualifier("verificationTokenRepository") TokenRepository<VerificationToken> tokenRepository) {
+    public VerificationTokenService(@Qualifier("verificationTokenRepository") TokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
     }
 

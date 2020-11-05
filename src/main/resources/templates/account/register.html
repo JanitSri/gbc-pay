@@ -11,8 +11,13 @@
           <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
           <div class="col-lg-7">
             <div class="p-5">
-              <div class="alert alert-danger text-danger" role="alert"th:if="${infoForUser}">
-                User already exists. <a th:href="@{/login}">Login</a>
+              <div class="alert alert-danger text-danger alert-dismissible fade show" role="alert"th:if="${infoForUser}">
+                <span th:remove="tag">
+                  User already exists. <a th:href="@{/login}">Login</a>
+                </span>
+                <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                </span>
               </div>
               <div class="text-center">
                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>

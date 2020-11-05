@@ -3,9 +3,10 @@ package com.example.formvalidiation.services.account;
 import com.example.formvalidiation.models.User;
 import com.example.formvalidiation.models.VerificationToken;
 import com.example.formvalidiation.services.UserService;
+import com.example.formvalidiation.services.email.Email;
 import com.example.formvalidiation.services.email.EmailService;
-import com.example.formvalidiation.services.email.VerificationEmail;
 import com.example.formvalidiation.services.token.VerificationTokenService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -16,14 +17,14 @@ public class RegisterService {
 
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
-    private final VerificationEmail verificationEmail;
+    private final Email email;
     private final EmailService emailService;
 
     public RegisterService(UserService userService, VerificationTokenService verificationTokenService,
-                           VerificationEmail verificationEmail, EmailService emailService) {
+                           @Qualifier("VerificationEmail") Email email, EmailService emailService) {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
-        this.verificationEmail = verificationEmail;
+        this.email = email;
         this.emailService = emailService;
     }
 
@@ -40,7 +41,7 @@ public class RegisterService {
         newUser.setVerificationToken(verificationToken);
         userService.saveUser(newUser);
 
-        MimeMessage email = verificationEmail.constructMessage(newUser, verificationToken);
+        MimeMessage email = this.email.constructMessage(newUser, verificationToken);
 
         emailService.sendEmail(email);
     }

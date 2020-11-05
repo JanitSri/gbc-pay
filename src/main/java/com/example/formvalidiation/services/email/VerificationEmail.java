@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-@Service
-public class VerificationEmail extends Email<VerificationToken> {
+@Service("VerificationEmail")
+public class VerificationEmail implements Email<VerificationToken> {
 
     private final EmailService emailService;
 

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-@Service
-public class PasswordResetEmail extends Email<PasswordResetToken> {
+@Service("passwordResetEmail")
+public class PasswordResetEmail implements Email<PasswordResetToken> {
 
     private final EmailService emailService;
 
