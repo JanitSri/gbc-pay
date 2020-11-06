@@ -6,4 +6,5 @@ import com.example.formvalidiation.models.User;
 abstract class TokenService<T extends Token> {
     public abstract T createToken(User user);
     public abstract T validateToken(String token);
+    public abstract T getByUser(User user);
 }

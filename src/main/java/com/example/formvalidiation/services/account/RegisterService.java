@@ -21,7 +21,7 @@ public class RegisterService {
     private final EmailService emailService;
 
     public RegisterService(UserService userService, VerificationTokenService verificationTokenService,
-                           @Qualifier("VerificationEmail") Email email, EmailService emailService) {
+                           @Qualifier("verificationEmail") Email email, EmailService emailService) {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
         this.email = email;
