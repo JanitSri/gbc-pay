@@ -1,12 +1,15 @@
 package com.example.formvalidiation.services.account;
 
+import com.example.formvalidiation.models.Role;
 import com.example.formvalidiation.models.User;
 import com.example.formvalidiation.models.VerificationToken;
-import com.example.formvalidiation.services.UserService;
+import com.example.formvalidiation.services.user.RoleService;
+import com.example.formvalidiation.services.user.UserService;
 import com.example.formvalidiation.services.email.Email;
 import com.example.formvalidiation.services.email.EmailService;
 import com.example.formvalidiation.services.token.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -19,13 +22,18 @@ public class RegisterService {
     private final VerificationTokenService verificationTokenService;
     private final Email email;
     private final EmailService emailService;
+    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
     public RegisterService(UserService userService, VerificationTokenService verificationTokenService,
-                           @Qualifier("verificationEmail") Email email, EmailService emailService) {
+                           @Qualifier("verificationEmail") Email email, EmailService emailService, RoleService roleService,
+                           PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
         this.email = email;
         this.emailService = emailService;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public boolean accountExists(String email){
@@ -33,10 +41,16 @@ public class RegisterService {
     }
 
     public void registerNewUser(User newUser) throws MessagingException {
-        newUser.setEnabled(false);
+        newUser.setEmailVerified(false);
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userService.saveUser(newUser);
 
         VerificationToken verificationToken = verificationTokenService.createToken(newUser);
+
+        Role userRole = roleService.getRole("USER");
+        newUser.getRoles().add(userRole);
+        userRole.getUsers().add(newUser);
+        userService.saveUser(newUser);
 
         newUser.setVerificationToken(verificationToken);
         userService.saveUser(newUser);
@@ -53,7 +67,7 @@ public class RegisterService {
         }
 
         User user = verificationToken.getUser();
-        user.setEnabled(true);
+        user.setEmailVerified(true);
         userService.saveUser(user);
 
         return true;

@@ -6,7 +6,9 @@ import com.example.formvalidiation.validation.PasswordMatches;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @PasswordMatches(first = "password", second = "confirmPassword", message = "Password fields must match")
 @Entity
@@ -42,7 +44,7 @@ public class User {
     @AssertTrue(message = "Must agree to terms of service")
     private boolean agreedToTerms;
 
-    private boolean enabled;
+    private boolean emailVerified;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
@@ -52,15 +54,23 @@ public class User {
             orphanRemoval = true)
     private List<PasswordResetToken> passwordResetTokens = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role", // join table for user and role
+            joinColumns = @JoinColumn(name = "user_id"), // owner side
+            inverseJoinColumns = @JoinColumn(name = "role_id") // other side
+    )
+    private Set<Role> roles = new HashSet<>();
+
     public User() {
     }
 
-    public User(String firstName, String lastName, String address, String password, String email, boolean enabled) {
+    public User(String firstName, String lastName, String address, String password, String email, boolean emailVerified) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.password = password;
-        this.enabled = enabled;
+        this.emailVerified = emailVerified;
         this.email = email;
     }
 
@@ -104,12 +114,12 @@ public class User {
         this.password = password;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isEmailVerified() {
+        return emailVerified;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setEmailVerified(boolean enabled) {
+        this.emailVerified = enabled;
     }
 
     public String getEmail() {
@@ -152,6 +162,14 @@ public class User {
         this.agreedToTerms = agreedToTerms;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -160,7 +178,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", address='" + address + '\'' +
                 ", password='" + password + '\'' +
-                ", enabled=" + enabled +
+                ", enabled=" + emailVerified +
                 '}';
     }
 

@@ -8,6 +8,7 @@
 <body th:replace="fragments/account.html :: bodyContent(~{::div})">
   <div class="col-lg-6">
     <div class="p-5">
+      <div id="recaptcha-error"></div>
       <div class="alert alert-danger alert-dismissible fade show" role="alert"
            th:if="${error}">
         <span th:text="${error}" th:remove="tag"></span>
@@ -37,15 +38,15 @@
       <div class="text-center">
         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
       </div>
-      <form class="user" th:action="@{/login}" method="post">
+      <form class="user" th:action="@{/login}" method="post" onsubmit="return googleCaptcha();">
         <div class="form-group">
-          <input type="email" class="form-control form-control-user" placeholder="Email Address">
+          <input type="text" class="form-control form-control-user" placeholder="Email Address" id="username" name="username">
         </div>
         <div class="form-group">
-          <input type="password" class="form-control form-control-user" placeholder="Password">
+          <input type="password" class="form-control form-control-user" placeholder="Password" id="password" name="password">
         </div>
         <div class="form-group ml-3">
-          <div class="g-recaptcha" data-sitekey="6LdWp98ZAAAAAM0nI0fXFszmR3AcAyQt41RGL5bn"></div>
+          <div class="g-recaptcha" data-sitekey="6LdWp98ZAAAAAM0nI0fXFszmR3AcAyQt41RGL5bn" data-callback="verifyCaptcha"></div>
         </div>
         <button type="submit" class="btn btn-primary btn-user btn-block">
           Login
@@ -60,6 +61,7 @@
         <a class="small" th:href="@{/register}">Create an Account!</a>
       </div>
     </div>
+    <script th:src="@{/js/robot.js}" async defer></script>
   </div>
 </body>
 </html>

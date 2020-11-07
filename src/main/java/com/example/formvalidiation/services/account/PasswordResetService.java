@@ -2,11 +2,12 @@ package com.example.formvalidiation.services.account;
 
 import com.example.formvalidiation.models.PasswordResetToken;
 import com.example.formvalidiation.models.User;
-import com.example.formvalidiation.services.UserService;
+import com.example.formvalidiation.services.user.UserService;
 import com.example.formvalidiation.services.email.Email;
 import com.example.formvalidiation.services.email.EmailService;
 import com.example.formvalidiation.services.token.PasswordResetTokenService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -19,13 +20,16 @@ public class PasswordResetService {
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailService emailService;
     private final Email email;
+    private final PasswordEncoder passwordEncoder;
 
     public PasswordResetService(UserService userService, PasswordResetTokenService passwordResetTokenService,
-                                EmailService emailService, @Qualifier("passwordResetEmail") Email email) {
+                                EmailService emailService, @Qualifier("passwordResetEmail") Email email,
+                                PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordResetTokenService = passwordResetTokenService;
         this.emailService = emailService;
         this.email = email;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private PasswordResetToken getPasswordResetTokenByToken(String resetToken){
@@ -64,7 +68,7 @@ public class PasswordResetService {
 
         passwordResetToken.setExpired(true);
         User user = userService.findByEmail(passwordResetToken.getUser().getEmail());
-        user.setPassword(existingUser.getPassword());
+        user.setPassword(passwordEncoder.encode(existingUser.getPassword()));
         userService.saveUser(user);
 
         return true;

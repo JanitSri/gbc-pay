@@ -1,12 +1,11 @@
 package com.example.formvalidiation.controllers;
 
-import com.example.formvalidiation.RecaptchaResponse;
 import com.example.formvalidiation.models.User;
 import com.example.formvalidiation.services.account.PasswordResetService;
 import com.example.formvalidiation.services.account.RegisterService;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
@@ -37,22 +36,18 @@ public class AccountController {
         return "account/login";
     }
 
-    @PostMapping({"/", "/login.html", "/login"})
-    public String postLogin(HttpSession session, @RequestParam("g-recaptcha-response") String response,
-                            Model model){
-        String reCaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
-        String urlParams = "?secret=6LdWp98ZAAAAAO-rTDmyfz3Np71C4aZ9nigyysxy&response="+response;
+    @PostMapping("/fail_login")
+    public String handleLoginError(Model model, @RequestBody MultiValueMap<String, String> formData,
+                                   RedirectAttributes ra){
+        System.out.println("User has failed to login");
 
-        RecaptchaResponse recaptchaResponse = restTemplate.exchange(reCaptchaURL+urlParams, HttpMethod.POST,
-                null, RecaptchaResponse.class).getBody();
+        String password = formData.get("password").get(0);
+        String username = formData.get("username").get(0);
 
-        if(!recaptchaResponse.isSuccess()){
-            model.addAttribute("error", "Are you a robot from the future? Please verify you are not.");
-            return "account/login";
+        if(!password.isEmpty() || !username.isEmpty()){
+            ra.addFlashAttribute("error", "Invalid username and/or password");
         }
-
-        session.setAttribute("currentUser", "User");
-        return "redirect:/dashboard";
+        return "redirect:/login";
     }
 
     @GetMapping({"/logout.html", "/logout"})
