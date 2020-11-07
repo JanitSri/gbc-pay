@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -17,10 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService,
+                                     AuthenticationEntryPoint authenticationEntryPoint) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Override
@@ -29,11 +33,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                     .disable()
                 .authorizeRequests()
-                    .antMatchers("/css/**", "/js/**","/assets/**", "/h2-console/**", "/", "/index",
-                            "/register", "/confirm", "/forgot_password", "/reset_password")
+                    .antMatchers("/css/**", "/js/**","/assets/**", "/h2-console/**", "/", "/index", "/login.html",
+                            "/register", "/register.html", "/confirm", "/confirm.html", "/forgot_password",
+                            "/forgot_password.html", "/reset_password", "/reset_password.html", "/denied_login")
                         .permitAll()
                 .anyRequest()
                 .authenticated()
+                .and()
+                    .exceptionHandling()
+                    .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                     .formLogin()
                         .loginPage("/login")
@@ -49,7 +57,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
                     .logoutSuccessUrl("/login")
-                .and().headers().frameOptions().sameOrigin();
+                .and()
+                    .headers()
+                    .frameOptions()
+                    .sameOrigin();
     }
 
     @Override

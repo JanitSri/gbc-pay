@@ -33,13 +33,13 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByEmailIgnoreCase(email);
+        User user = findByEmail(email);
 
-        if(user.isEmpty()){
+        if(user == null){
             throw new UsernameNotFoundException("User not found: "+ email);
         }
 
-        UserDetailsImp userDetailsImp = new UserDetailsImp(user.get());
+        UserDetailsImp userDetailsImp = new UserDetailsImp(user);
 
         return userDetailsImp;
     }

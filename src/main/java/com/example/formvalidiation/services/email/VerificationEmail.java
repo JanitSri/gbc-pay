@@ -23,7 +23,7 @@ public class VerificationEmail implements Email<VerificationToken> {
 
     @Override
     public MimeMessage constructMessage(User user, VerificationToken token) throws MessagingException {
-        final String message = String.format("<h1>Thank you for registering!</h1>" +
+        final String message = String.format("<h1>GBC PAY - Thank you for registering!</h1>" +
                 "  <p>Name: %s %s</p>" +
                 "  <p>Email: %s</p>" +
                 "  <p>Please click <a href=\"http://localhost:%d/confirm?token=%s\"><strong>" +

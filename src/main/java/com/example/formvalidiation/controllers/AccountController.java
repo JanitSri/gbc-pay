@@ -13,8 +13,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Arrays;
 
 @Controller
 public class AccountController {
@@ -50,6 +52,14 @@ public class AccountController {
         return "redirect:/login";
     }
 
+    @GetMapping("/denied_login")
+    public String handleAccessDenied(RedirectAttributes ra){
+        System.out.println("Access Denied");
+
+        ra.addFlashAttribute("error", "You have to login to access that page.");
+        return "redirect:/login";
+    }
+
     @GetMapping({"/logout.html", "/logout"})
     public String getLogout(HttpSession session, SessionStatus status){
         status.setComplete();
@@ -77,7 +87,8 @@ public class AccountController {
 
         try {
             registerService.registerNewUser(user);
-            ra.addFlashAttribute("successfulRegister", "Registration successful. Please login.");
+            ra.addFlashAttribute("successfulRegister", "Registration successful. A verification link has " +
+                    "been sent to " + user.getEmail() + ".");
         } catch (MessagingException e) {
             e.printStackTrace();
             ra.addFlashAttribute("error", "Registration successful. Please login.");

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping("/dashboard")
+@RequestMapping({"/dashboard", "/dashboard.html"})
 public class DashboardController {
 
     @GetMapping({"", "/index.html", "index"})
@@ -35,5 +35,4 @@ public class DashboardController {
     public String getTab4(){
         return "dashboard/tab4";
     }
-
 }

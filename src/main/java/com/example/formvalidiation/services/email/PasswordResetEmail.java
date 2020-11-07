@@ -20,7 +20,7 @@ public class PasswordResetEmail implements Email<PasswordResetToken> {
 
     @Override
     public MimeMessage constructMessage(User user, PasswordResetToken token) throws MessagingException {
-        final String message = String.format("<h1>Password Reset</h1>" +
+        final String message = String.format("<h1>GBC PAY - Password Reset</h1>" +
                 "  <p>Email: %s</p>" +
                 "  <p>Please click <a href=\"http://localhost:%d/reset_password?token=%s\"><strong>" +
                 "here</strong></a> to reset you password. </p>", user.getEmail(), portNumber, token.getTokenName());
