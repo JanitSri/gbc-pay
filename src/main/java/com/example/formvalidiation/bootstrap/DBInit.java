@@ -46,9 +46,8 @@ public class DBInit implements CommandLineRunner {
 
         admin1.getRoles().add(role_user);
         role_user.getUsers().add(admin1);
-        roleRepository.save(role_user);
 
-        System.out.println("Number of users: " + userRepository.count());
-        System.out.println("Number of roles: " + roleRepository.count());
+        roleRepository.save(role_user);
+        userRepository.save(admin1);
     }
 }
