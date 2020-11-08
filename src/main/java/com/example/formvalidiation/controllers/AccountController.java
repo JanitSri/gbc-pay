@@ -89,19 +89,14 @@ public class AccountController {
         }
 
         try {
-            String initialPassword = user.getPassword();
             registerService.registerNewUser(user);
             ra.addFlashAttribute("successfulRegister", "Registration successful. A verification link has " +
                     "been sent to " + user.getEmail() + ".");
-            request.login(user.getEmail(), initialPassword);
-            return "redirect:/dashboard";
         } catch (MessagingException e) {
             e.printStackTrace();
-        } catch (ServletException e) {
-            e.printStackTrace();
+            ra.addFlashAttribute("error", "Registration unsuccessful. Please try again.");
         }
 
-        ra.addFlashAttribute("error", "Registration unsuccessful. Please try again.");
         return "redirect:/login";
     }
 

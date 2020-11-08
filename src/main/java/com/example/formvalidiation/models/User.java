@@ -41,7 +41,7 @@ public class User {
     private String email;
 
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,12}$",
-            message = "Password must be between 6-12 characters, no whitespace, contain at least 1 uppercase letter and " +
+            message = "Password must be between 6-12 characters, contain at least 1 uppercase letter and " +
                     "contain at least 1 special character")
     private String password;
 
