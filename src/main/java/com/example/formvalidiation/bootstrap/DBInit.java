@@ -1,3 +1,12 @@
+/**********************************************************************************
+* Project: GBC PAY - The Raptors
+* Assignment: Assignment 2
+* Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+* Student Number: 101229102, 101186743, 101028504
+* Date: November 08, 2020
+* Description: Initially add data to the database, i.e. admin.
+*********************************************************************************/
+
 package com.example.formvalidiation.bootstrap;
 
 import com.example.formvalidiation.models.Role;
@@ -35,6 +44,8 @@ public class DBInit implements CommandLineRunner {
         roleRepository.save(role_admin);
         userRepository.save(admin1);
 
+        admin1.getRoles().add(role_user);
+        role_user.getUsers().add(admin1);
         roleRepository.save(role_user);
 
         System.out.println("Number of users: " + userRepository.count());

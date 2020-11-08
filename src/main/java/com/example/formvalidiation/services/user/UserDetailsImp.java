@@ -1,3 +1,12 @@
+/********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 2
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: November 08, 2020
+ * Description: Class implements UserDetails for use with authentication and authentication.
+ *********************************************************************************/
+
 package com.example.formvalidiation.services.user;
 
 import com.example.formvalidiation.models.User;
@@ -49,7 +58,7 @@ public class UserDetailsImp implements UserDetails {
         return true;
     }
 
-    public User getUser(){
+    public User getUser() {
         return user;
     }
 }

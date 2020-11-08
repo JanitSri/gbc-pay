@@ -1,8 +1,16 @@
+/**********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 2
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: November 08, 2020
+ * Description: Service class to handle the password reset token from the repository.
+ *********************************************************************************/
+
 package com.example.formvalidiation.services.token;
 
 import com.example.formvalidiation.models.PasswordResetToken;
 import com.example.formvalidiation.models.User;
-import com.example.formvalidiation.repositories.PasswordResetTokenRepository;
 import com.example.formvalidiation.repositories.TokenRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

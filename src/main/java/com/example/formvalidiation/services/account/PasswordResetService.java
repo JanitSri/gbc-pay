@@ -1,3 +1,12 @@
+/**********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 2
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: November 08, 2020
+ * Description: Service class for the password reset feature.
+ *********************************************************************************/
+
 package com.example.formvalidiation.services.account;
 
 import com.example.formvalidiation.models.PasswordResetToken;
@@ -32,7 +41,7 @@ public class PasswordResetService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    private PasswordResetToken getPasswordResetTokenByToken(String resetToken){
+    private PasswordResetToken getPasswordResetTokenByToken(String resetToken) {
         return passwordResetTokenService.validateToken(resetToken);
     }
 
@@ -50,7 +59,7 @@ public class PasswordResetService {
         User user = userService.findByEmail(existingUser.getEmail());
 
         PasswordResetToken currentToken = getPasswordResetTokenByUser(user);
-        if(currentToken == null) {
+        if (currentToken == null) {
             currentToken = passwordResetTokenService.createToken(user);
             user.getPasswordResetToken().add(currentToken);
             userService.saveUser(user);
@@ -60,7 +69,7 @@ public class PasswordResetService {
         emailService.sendEmail(email);
     }
 
-    public boolean resetPassword(User existingUser, String resetToken){
+    public boolean resetPassword(User existingUser, String resetToken) {
 
         if (!validPasswordResetToken(resetToken)) return false;
 

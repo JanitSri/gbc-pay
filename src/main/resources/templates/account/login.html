@@ -16,13 +16,6 @@
           <span aria-hidden="true">&times;</span>
         </span>
       </div>
-      <div class="alert alert-primary alert-dismissible fade show" role="alert"
-           th:if="${successfulRegister}">
-        <span th:text="${successfulRegister}" th:remove="tag"></span>
-        <span type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </span>
-      </div>
       <div class="alert alert-primary alert-dismissible fade show" role="alert" th:if="${validToken}">
         <span th:text="${validToken}" th:remove="tag"></span>
         <span type="button" class="close" data-dismiss="alert" aria-label="Close">

@@ -1,5 +1,22 @@
+/********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 2
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: November 08, 2020
+ * Description: Email message handler for sending email for password reset.
+ *********************************************************************************/
+
 package com.example.formvalidiation.validation;
 
+/********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 2
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: November 08, 2020
+ * Description: Custom validator to check if passwords matches using annotation.
+ *********************************************************************************/
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

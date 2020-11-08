@@ -1,3 +1,12 @@
+/**********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 2
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: November 08, 2020
+ * Description: Service class to handle the user registration feature.
+ *********************************************************************************/
+
 package com.example.formvalidiation.services.account;
 
 import com.example.formvalidiation.models.Role;
@@ -36,11 +45,11 @@ public class RegisterService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean accountExists(String email){
+    public boolean accountExists(String email) {
         return userService.userExists(email);
     }
 
-    public void registerNewUser(User newUser) throws MessagingException {
+    public User registerNewUser(User newUser) throws MessagingException {
         newUser.setEmailVerified(false);
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userService.saveUser(newUser);
@@ -58,11 +67,13 @@ public class RegisterService {
         MimeMessage email = this.email.constructMessage(newUser, verificationToken);
 
         emailService.sendEmail(email);
+
+        return newUser;
     }
 
-    public boolean enableUser(String userToken){
+    public boolean enableUser(String userToken) {
         VerificationToken verificationToken = verificationTokenService.validateToken(userToken);
-        if(verificationToken == null){
+        if (verificationToken == null) {
             return false;
         }
 

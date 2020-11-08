@@ -1,3 +1,12 @@
+/********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 2
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: November 08, 2020
+ * Description: Verification token service that allows access to the verification token repository.
+ *********************************************************************************/
+
 package com.example.formvalidiation.services.token;
 
 import com.example.formvalidiation.models.VerificationToken;
@@ -12,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class VerificationTokenService extends TokenService<VerificationToken>{
+public class VerificationTokenService extends TokenService<VerificationToken> {
     private final TokenRepository tokenRepository;
 
     public VerificationTokenService(@Qualifier("verificationTokenRepository") TokenRepository tokenRepository) {
@@ -20,7 +29,7 @@ public class VerificationTokenService extends TokenService<VerificationToken>{
     }
 
     @Override
-    public VerificationToken createToken(User user){
+    public VerificationToken createToken(User user) {
         final VerificationToken verificationToken = new VerificationToken(UUID.randomUUID().toString(), LocalDate.now());
         verificationToken.setUser(user);
         tokenRepository.save(verificationToken);
@@ -28,7 +37,7 @@ public class VerificationTokenService extends TokenService<VerificationToken>{
     }
 
     @Override
-    public VerificationToken validateToken(String verificationToken){
+    public VerificationToken validateToken(String verificationToken) {
         Optional<VerificationToken> optionalToken = tokenRepository.findByTokenName(verificationToken);
 
         return optionalToken.orElse(null);
