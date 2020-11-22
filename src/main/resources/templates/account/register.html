@@ -8,7 +8,7 @@
     <div class="p-5">
       <div class="alert alert-danger text-danger alert-dismissible fade show" role="alert"th:if="${infoForUser}">
         <span th:remove="tag">
-          <span th:text="${infoForUser}" th:remove="tag"></span> <a th:href="@{/login}">Login</a>
+          <span th:text="${infoForUser}" th:remove="tag"></span> If that is you, please <a th:href="@{/login}">login.</a>
         </span>
         <span type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
