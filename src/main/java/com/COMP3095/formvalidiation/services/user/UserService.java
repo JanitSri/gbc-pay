@@ -36,8 +36,8 @@ public class UserService implements UserDetailsService {
         return findByEmail(email) != null;
     }
 
-    public User saveUser(User newUser) {
-        return userRepository.save(newUser);
+    public void saveUser(User newUser) {
+        userRepository.save(newUser);
     }
 
     @Override
@@ -48,8 +48,6 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found: " + email);
         }
 
-        UserDetailsImp userDetailsImp = new UserDetailsImp(user);
-
-        return userDetailsImp;
+        return new UserDetailsImp(user);
     }
 }
