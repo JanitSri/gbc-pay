@@ -16,8 +16,7 @@ import java.time.LocalDate;
 public class VerificationToken extends Token {
 
     @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Profile profile;
 
     public VerificationToken() {
     }
@@ -26,11 +25,11 @@ public class VerificationToken extends Token {
         super(tokenName, createdDate);
     }
 
-    public User getUser() {
-        return user;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }

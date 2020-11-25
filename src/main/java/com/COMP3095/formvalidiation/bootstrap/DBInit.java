@@ -1,53 +1,89 @@
-/**********************************************************************************
-* Project: GBC PAY - The Raptors
-* Assignment: Assignment 2
-* Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
-* Student Number: 101229102, 101186743, 101028504
-* Date: November 08, 2020
-* Description: Initially add data to the database, i.e. admin.
-*********************************************************************************/
-
 package com.COMP3095.formvalidiation.bootstrap;
 
-import com.COMP3095.formvalidiation.models.Role;
-import com.COMP3095.formvalidiation.models.User;
-import com.COMP3095.formvalidiation.repositories.RoleRepository;
+
+import com.COMP3095.formvalidiation.models.*;
+import com.COMP3095.formvalidiation.repositories.ProfileRepository;
 import com.COMP3095.formvalidiation.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.*;
 
 @Component
 public class DBInit implements CommandLineRunner {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final ProfileRepository profileRepository;
 
-    public DBInit(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public DBInit(UserRepository userRepository, ProfileRepository profileRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.profileRepository = profileRepository;
     }
-
 
     @Override
     public void run(String... args) throws Exception {
-        User admin1 = new User("admin", "admin", "admin address",
-                 passwordEncoder.encode("P@ssword1"), "admin@isp.net",true);
 
-        Role role_user = new Role("USER");
-        Role role_admin = new Role("ADMIN");
+        User user = new User("john", "smith", LocalDate.parse("1990-01-20"));
 
-        admin1.getRoles().add(role_admin);
-        role_admin.getUsers().add(admin1);
+        Profile profile2 = new Profile("john_smith_123@hotmail.com", false, "123test", LocalDate.now());
+        Address address2 = new Address("123 Pine Blvd", "Mississauga", "Canada", true, true);
 
-        roleRepository.save(role_admin);
-        userRepository.save(admin1);
+        profile2.setAddress(address2);
+        address2.setProfile(profile2);
 
-        admin1.getRoles().add(role_user);
-        role_user.getUsers().add(admin1);
+        Credit credit2 = new Credit(CardType.VISA, LocalDate.parse("2022-01-20"), "John Smith",
+                "9876 9876 9876 9876", true);
 
-        roleRepository.save(role_user);
-        userRepository.save(admin1);
+        Set<Credit> profile2_credit = new HashSet<Credit>(){{
+            add(credit2);
+        }};
+        profile2.setCredits(profile2_credit);
+        credit2.setProfile(profile2);
+
+        VerificationToken verificationToken2 = new VerificationToken(UUID.randomUUID().toString(), LocalDate.now());
+
+        profile2.setVerificationToken(verificationToken2);
+        verificationToken2.setProfile(profile2);
+
+        Message message1 = new Message("Login Error",
+                "I having trouble logging into my account.",
+                false);
+
+        Message message2 = new Message("Error has been fixed",
+                "You should be able to login into your account now.",
+                false);
+
+        List<Message> messages_second = new ArrayList<>() {{
+            add(message1);
+            add(message2);
+        }};
+
+        profile2.setMessages(messages_second);
+
+        Role role1 = new Role("USER");
+        Role role2 = new Role("ADMIN");
+
+        Set<Role> roles2 = new HashSet<Role>() {{
+            add(role1);
+            add(role2);
+        }};
+
+        profile2.setRoles(roles2);
+        profile2.setUser(user);
+
+        Set<Profile> profiles = new HashSet<Profile>() {{
+            add(profile2);
+        }};
+
+        user.setProfiles(profiles);
+
+        userRepository.save(user);
+
+        System.out.println("GETTING PROFILE...");
+        profileRepository.findByEmailIgnoreCase("john_smith_123@hotmail.com")
+                .ifPresentOrElse(
+                        profile -> profile.getRoles().forEach(r -> System.out.println(r.getRoleName())),
+                        () -> System.out.println("Profile does not exist"));
+
     }
 }

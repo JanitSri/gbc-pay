@@ -1,12 +1,3 @@
-/**********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Token that is used with password resets.
- *********************************************************************************/
-
 package com.COMP3095.formvalidiation.models;
 
 import javax.persistence.*;
@@ -18,8 +9,7 @@ public class PasswordResetToken extends Token{
     private boolean expired;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Profile profile;
 
     public PasswordResetToken() {
     }
@@ -29,12 +19,12 @@ public class PasswordResetToken extends Token{
         this.expired = expired;
     }
 
-    public User getUser() {
-        return user;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public boolean isExpired() {

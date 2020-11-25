@@ -1,12 +1,3 @@
-/********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Implementation of the login for the logic for the custom password validators.
- *********************************************************************************/
-
 package com.COMP3095.formvalidiation.validation;
 
 import org.apache.commons.beanutils.BeanUtils;

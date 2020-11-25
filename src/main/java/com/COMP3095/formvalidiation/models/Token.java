@@ -1,12 +1,3 @@
-/**********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Superclass of any token that will be created by the applcaition.
- *********************************************************************************/
-
 package com.COMP3095.formvalidiation.models;
 
 import javax.persistence.GeneratedValue;
@@ -25,6 +16,8 @@ public class Token {
     private String tokenName;
 
     private LocalDate createdDate;
+
+    private LocalDate usedDate;
 
     public Token() {
     }
@@ -56,5 +49,13 @@ public class Token {
 
     public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public LocalDate getUsedDate() {
+        return usedDate;
+    }
+
+    public void setUsedDate(LocalDate usedDate) {
+        this.usedDate = usedDate;
     }
 }
