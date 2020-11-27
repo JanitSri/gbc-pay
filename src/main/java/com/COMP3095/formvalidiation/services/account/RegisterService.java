@@ -1,17 +1,6 @@
-/**********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Service class to handle the user registration feature.
- *********************************************************************************/
-
 package com.COMP3095.formvalidiation.services.account;
 
-import com.COMP3095.formvalidiation.models.Role;
-import com.COMP3095.formvalidiation.models.User;
-import com.COMP3095.formvalidiation.models.VerificationToken;
+import com.COMP3095.formvalidiation.models.*;
 import com.COMP3095.formvalidiation.services.user.RoleService;
 import com.COMP3095.formvalidiation.services.user.UserService;
 import com.COMP3095.formvalidiation.services.email.Email;
@@ -23,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDate;
 
 @Service
 public class RegisterService {
@@ -46,29 +36,31 @@ public class RegisterService {
     }
 
     public boolean accountExists(String email) {
-        return userService.userExists(email);
+        return userService.userProfileExists(email);
     }
 
-    public User registerNewUser(User newUser) throws MessagingException {
-        newUser.setEmailVerified(false);
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        userService.saveUser(newUser);
+    public void registerNewUser(User newUser, Profile newProfile, Address newAddress) throws MessagingException {
+        newProfile.setEmailVerified(false);
+        newProfile.setPassword(passwordEncoder.encode(newProfile.getPassword()));
+        newProfile.setLastLogin(LocalDate.now());
 
-        VerificationToken verificationToken = verificationTokenService.createToken(newUser);
+        newProfile.setAddress(newAddress);
 
         Role userRole = roleService.getRole("USER");
-        newUser.getRoles().add(userRole);
-        userRole.getUsers().add(newUser);
+        newProfile.getRoles().add(userRole);
+        userRole.getProfiles().add(newProfile);
+
+        VerificationToken verificationToken = verificationTokenService.createToken(newProfile);
+        newProfile.setVerificationToken(verificationToken);
+
+        newProfile.setUser(newUser);
+        newUser.getProfiles().add(newProfile);
+
         userService.saveUser(newUser);
 
-        newUser.setVerificationToken(verificationToken);
-        userService.saveUser(newUser);
-
-        MimeMessage email = this.email.constructMessage(newUser, verificationToken);
+        MimeMessage email = this.email.constructMessage(newUser, newProfile, verificationToken);
 
         emailService.sendEmail(email);
-
-        return newUser;
     }
 
     public boolean enableUser(String userToken) {
@@ -77,9 +69,9 @@ public class RegisterService {
             return false;
         }
 
-        User user = verificationToken.getUser();
-        user.setEmailVerified(true);
-        userService.saveUser(user);
+        Profile profile = verificationToken.getProfile();
+        profile.setEmailVerified(true);
+        userService.saveProfile(profile);
 
         return true;
     }

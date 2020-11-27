@@ -9,6 +9,7 @@
 
 package com.COMP3095.formvalidiation.services.token;
 
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.VerificationToken;
 import com.COMP3095.formvalidiation.models.User;
 import com.COMP3095.formvalidiation.repositories.TokenRepository;
@@ -29,10 +30,9 @@ public class VerificationTokenService extends TokenService<VerificationToken> {
     }
 
     @Override
-    public VerificationToken createToken(User user) {
+    public VerificationToken createToken(Profile profile) {
         final VerificationToken verificationToken = new VerificationToken(UUID.randomUUID().toString(), LocalDate.now());
-        verificationToken.setUser(user);
-        tokenRepository.save(verificationToken);
+        verificationToken.setProfile(profile);
         return verificationToken;
     }
 
@@ -44,11 +44,10 @@ public class VerificationTokenService extends TokenService<VerificationToken> {
     }
 
     @Override
-    public VerificationToken getByUser(User user) {
-        List<VerificationToken> tokens = tokenRepository.findByUser(user);
-        VerificationToken token = tokens.stream()
+    public VerificationToken getByProfile(Profile profile) {
+        List<VerificationToken> tokens = tokenRepository.findByProfile(profile);
+        return tokens.stream()
                 .findFirst()
                 .orElse(null);
-        return token;
     }
 }

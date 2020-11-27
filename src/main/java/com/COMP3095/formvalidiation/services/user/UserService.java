@@ -1,15 +1,8 @@
-/********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: User service that provides access to the user repository.
- *********************************************************************************/
-
 package com.COMP3095.formvalidiation.services.user;
 
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.User;
+import com.COMP3095.formvalidiation.repositories.ProfileRepository;
 import com.COMP3095.formvalidiation.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,18 +14,20 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ProfileRepository profileRepository) {
         this.userRepository = userRepository;
+        this.profileRepository = profileRepository;
     }
 
-    public User findByEmail(String email) {
-        Optional<User> user = userRepository.findByEmailIgnoreCase(email);
+    public Profile findByEmail(String email) {
+        Optional<Profile> userProfile = profileRepository.findByEmailIgnoreCase(email);
 
-        return user.orElse(null);
+        return userProfile.orElse(null);
     }
 
-    public boolean userExists(String email) {
+    public boolean userProfileExists(String email) {
         return findByEmail(email) != null;
     }
 
@@ -40,14 +35,18 @@ public class UserService implements UserDetailsService {
         userRepository.save(newUser);
     }
 
+    public void saveProfile(Profile profile) {
+        profileRepository.save(profile);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = findByEmail(email);
+        Profile profile = findByEmail(email);
 
-        if (user == null) {
+        if (profile == null) {
             throw new UsernameNotFoundException("User not found: " + email);
         }
 
-        return new UserDetailsImp(user);
+        return new UserDetailsImp(profile);
     }
 }

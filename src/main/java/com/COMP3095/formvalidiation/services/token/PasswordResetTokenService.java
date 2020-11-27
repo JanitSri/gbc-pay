@@ -10,6 +10,7 @@
 package com.COMP3095.formvalidiation.services.token;
 
 import com.COMP3095.formvalidiation.models.PasswordResetToken;
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.User;
 import com.COMP3095.formvalidiation.repositories.TokenRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,10 +31,10 @@ public class PasswordResetTokenService extends TokenService<PasswordResetToken>{
     }
 
     @Override
-    public PasswordResetToken createToken(User user){
+    public PasswordResetToken createToken(Profile profile){
         final PasswordResetToken passwordResetToken = new PasswordResetToken(UUID.randomUUID().toString(), LocalDate.now(), false);
-        passwordResetToken.setUser(user);
-        tokenRepository.save(passwordResetToken);
+        passwordResetToken.setProfile(profile);
+
         return passwordResetToken;
     }
 
@@ -43,12 +44,11 @@ public class PasswordResetTokenService extends TokenService<PasswordResetToken>{
         return optionalToken.orElse(null);
     }
 
-    public PasswordResetToken getByUser(User user){
-        List<PasswordResetToken> tokens = tokenRepository.findByUser(user);
-        PasswordResetToken token = tokens.stream()
+    public PasswordResetToken getByProfile(Profile profile){
+        List<PasswordResetToken> tokens = tokenRepository.findByProfile(profile);
+        return tokens.stream()
                 .filter(passwordResetToken -> !passwordResetToken.isExpired())
                 .findFirst()
                 .orElse(null);
-        return token;
     }
 }

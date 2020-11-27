@@ -10,6 +10,7 @@
 package com.COMP3095.formvalidiation.services.email;
 
 import com.COMP3095.formvalidiation.models.PasswordResetToken;
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,14 +31,14 @@ public class PasswordResetEmail implements Email<PasswordResetToken> {
     }
 
     @Override
-    public MimeMessage constructMessage(User user, PasswordResetToken token) throws MessagingException {
+    public MimeMessage constructMessage(User user, Profile profile, PasswordResetToken token) throws MessagingException {
         final String message = String.format("<h1>GBC PAY - Password Reset</h1>" +
                 "  <p>Email: %s</p>" +
                 "  <p>Please click <a href=\"http://localhost:%d/reset_password?token=%s\"><strong>" +
-                "here</strong></a> to reset you password. </p>", user.getEmail(), portNumber, token.getTokenName());
+                "here</strong></a> to reset you password. </p>", profile.getEmail(), portNumber, token.getTokenName());
 
         String emailHeader = "Financial Dashboard Password Reset";
 
-        return emailService.createEmail(user, message, emailHeader);
+        return emailService.createEmail(profile, message, emailHeader);
     }
 }

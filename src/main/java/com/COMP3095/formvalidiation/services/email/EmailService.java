@@ -9,6 +9,7 @@
 
 package com.COMP3095.formvalidiation.services.email;
 
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -35,12 +36,12 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
-    public MimeMessage createEmail(User user, String message, String header) throws MessagingException {
+    public MimeMessage createEmail(Profile profile, String message, String header) throws MessagingException {
         MimeMessage mailMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mailMessage, "utf-8");
 
         helper.setText(message, true);
-        helper.setTo(user.getEmail());
+        helper.setTo(profile.getEmail());
         helper.setSubject(header);
         helper.setFrom(fromEmail);
         return mailMessage;

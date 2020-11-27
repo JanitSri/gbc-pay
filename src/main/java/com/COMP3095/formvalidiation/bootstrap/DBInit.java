@@ -5,6 +5,7 @@ import com.COMP3095.formvalidiation.models.*;
 import com.COMP3095.formvalidiation.repositories.ProfileRepository;
 import com.COMP3095.formvalidiation.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -14,10 +15,12 @@ import java.util.*;
 public class DBInit implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DBInit(UserRepository userRepository, ProfileRepository profileRepository) {
+    public DBInit(UserRepository userRepository, ProfileRepository profileRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class DBInit implements CommandLineRunner {
 
         User user = new User("john", "smith", LocalDate.parse("1990-01-20"));
 
-        Profile profile2 = new Profile("john_smith_123@hotmail.com", false, "123test", LocalDate.now());
+        Profile profile2 = new Profile("john_smith_123@hotmail.com", false, passwordEncoder.encode("123test"), LocalDate.now());
         Address address2 = new Address("123 Pine Blvd", "Mississauga", "Canada", true, true);
 
         profile2.setAddress(address2);

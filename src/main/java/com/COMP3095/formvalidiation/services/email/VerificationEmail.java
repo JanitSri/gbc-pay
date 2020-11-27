@@ -9,6 +9,7 @@
 
 package com.COMP3095.formvalidiation.services.email;
 
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.User;
 import com.COMP3095.formvalidiation.models.VerificationToken;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,16 +31,16 @@ public class VerificationEmail implements Email<VerificationToken> {
     }
 
     @Override
-    public MimeMessage constructMessage(User user, VerificationToken token) throws MessagingException {
+    public MimeMessage constructMessage(User user, Profile profile, VerificationToken token) throws MessagingException {
         final String message = String.format("<h1>GBC PAY - Thank you for registering!</h1>" +
                         "  <p>Name: %s %s</p>" +
                         "  <p>Email: %s</p>" +
                         "  <p>Please click <a href=\"http://localhost:%d/confirm?token=%s\"><strong>" +
                         "here</strong></a> to verify your account </p>", user.getFirstName(), user.getLastName(),
-                user.getEmail(), portNumber, token.getTokenName());
+                profile.getEmail(), portNumber, token.getTokenName());
 
         String verificationHeader = "Financial Dashboard Confirmation Link!";
 
-        return emailService.createEmail(user, message, verificationHeader);
+        return emailService.createEmail(profile, message, verificationHeader);
     }
 }

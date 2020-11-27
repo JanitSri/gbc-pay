@@ -3,6 +3,10 @@ package com.COMP3095.formvalidiation.models;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,10 +18,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Pattern(regexp = "^[A-Za-z]+$", message = "First Name can only contain alphabets")
     private String firstName;
 
+    @Pattern(regexp = "^[A-Za-z]+$", message = "Last Name can only contain alphabets")
     private String lastName;
 
+    @NotNull(message = "Date of Birth cannot be empty")
+    @Past(message = "Date of Birth should be in the past")
     private LocalDate dateOfBirth;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")

@@ -1,18 +1,11 @@
-/**********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: The controller for all endpoints dealing with account management (login, register, forget password,
- *               reset password)
- *********************************************************************************/
-
 package com.COMP3095.formvalidiation.controllers;
 
+import com.COMP3095.formvalidiation.models.Address;
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.User;
 import com.COMP3095.formvalidiation.services.account.PasswordResetService;
 import com.COMP3095.formvalidiation.services.account.RegisterService;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
@@ -25,6 +18,9 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class AccountController {
@@ -70,27 +66,49 @@ public class AccountController {
     }
 
     @GetMapping({"/register.html", "/register"})
-    public String getRegisterForm(@ModelAttribute("user") User user) {
+    public String getRegisterForm(@ModelAttribute("user") User user, @ModelAttribute("profile") Profile profile,
+                                  @ModelAttribute("address") Address address) {
         return "account/register";
     }
 
     @PostMapping({"/register.html", "/register"})
-    public String postRegisterForm(@ModelAttribute("user") @Valid User user, BindingResult result, Model model,
-                                   RedirectAttributes ra, HttpServletRequest request) {
+    public String postRegisterForm(@ModelAttribute("user") @Valid User user, BindingResult userResult,
+                                   @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
+                                   @ModelAttribute("address") @Valid Address address, BindingResult addressResult,
+                                   Model model, RedirectAttributes ra) {
 
-        if (result.hasErrors()) {
+        if (userResult.hasErrors() || profileResult.hasErrors() || addressResult.hasErrors()) {
+
+            List<String> profileErrorMessages = profileResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            model.addAttribute("profileFormError", profileErrorMessages);
+
+            List<String> userErrorMessages = userResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            model.addAttribute("userFormError", userErrorMessages);
+
+            List<String> addressErrorMessages = addressResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            model.addAttribute("addressFormError", addressErrorMessages);
+
             return "account/register";
         }
 
-        if (registerService.accountExists(user.getEmail())) {
+        if (registerService.accountExists(profile.getEmail())) {
             model.addAttribute("infoForUser", "The user already exists.");
             return "account/register";
         }
 
         try {
-            registerService.registerNewUser(user);
+            registerService.registerNewUser(user, profile, address);
             ra.addFlashAttribute("successfulRegister", "Registration successful. A verification link has " +
-                    "been sent to " + user.getEmail() + ".");
+                    "been sent to " + profile.getEmail() + ".");
         } catch (MessagingException e) {
             e.printStackTrace();
             ra.addFlashAttribute("error", "Registration unsuccessful. Please try again.");
@@ -110,27 +128,27 @@ public class AccountController {
     }
 
     @GetMapping({"/forgot_password.html", "/forgot_password"})
-    public String getForgotPassword(@ModelAttribute("user") User user) {
+    public String getForgotPassword(@ModelAttribute("profile") Profile profile) {
         return "account/forgot_password";
     }
 
     @PostMapping({"/forgot_password.html", "/forgot_password"})
-    public String sendForgotPassword(@ModelAttribute("user") @Valid User user, BindingResult result, Model model,
+    public String sendForgotPassword(@ModelAttribute("profile") @Valid Profile profile, BindingResult result, Model model,
                                      RedirectAttributes ra) {
 
         if (result.hasFieldErrors("email")) {
             return "account/forgot_password";
         }
 
-        if (!registerService.accountExists(user.getEmail())) {
+        if (!registerService.accountExists(profile.getEmail())) {
             model.addAttribute("invalidAccount", "The account does not exists.");
             return "account/forgot_password";
         }
 
         try {
-            passwordResetService.sendResetPasswordLink(user);
+            passwordResetService.sendResetPasswordLink(profile);
             ra.addFlashAttribute("forgotPassword", "A password reset link has been sent to " +
-                    user.getEmail() + ".");
+                    profile.getEmail() + ".");
         } catch (MessagingException e) {
             e.printStackTrace();
             ra.addFlashAttribute("error", "Password reset unsuccessful. Please try again.");
@@ -140,7 +158,7 @@ public class AccountController {
     }
 
     @GetMapping({"/reset_password.html", "/reset_password"})
-    public String getResetPassword(@RequestParam("token") String token, @ModelAttribute("user") User user, Model model,
+    public String getResetPassword(@RequestParam("token") String token, @ModelAttribute("profile") Profile profile, Model model,
                                    RedirectAttributes ra) {
 
         if (!passwordResetService.validPasswordResetToken(token)) {
@@ -153,7 +171,7 @@ public class AccountController {
     }
 
     @PostMapping({"/reset_password.html", "/reset_password"})
-    public String postResetPassword(@RequestParam("token") String token, @ModelAttribute("user") @Valid User user,
+    public String postResetPassword(@RequestParam("token") String token, @ModelAttribute("profile") @Valid Profile profile,
                                     BindingResult result, RedirectAttributes ra, Model model) {
 
         if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
@@ -161,7 +179,7 @@ public class AccountController {
             return "account/reset_password";
         }
 
-        if (passwordResetService.resetPassword(user, token)) {
+        if (passwordResetService.resetPassword(profile, token)) {
             ra.addFlashAttribute("validToken", "Your password has been reset. Please login.");
         } else {
             ra.addFlashAttribute("error", "This password reset link is not valid.");

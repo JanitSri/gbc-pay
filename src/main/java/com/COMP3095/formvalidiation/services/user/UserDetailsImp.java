@@ -1,14 +1,6 @@
-/********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Class implements UserDetails for use with authentication and authentication.
- *********************************************************************************/
-
 package com.COMP3095.formvalidiation.services.user;
 
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +9,10 @@ import java.util.Collection;
 
 public class UserDetailsImp implements UserDetails {
 
-    private final User user;
+    private final Profile profile;
 
-    public UserDetailsImp(User user) {
-        this.user = user;
+    public UserDetailsImp(Profile profile) {
+        this.profile = profile;
     }
 
     @Override
@@ -30,12 +22,12 @@ public class UserDetailsImp implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return profile.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return profile.getEmail();
     }
 
     @Override
@@ -59,6 +51,6 @@ public class UserDetailsImp implements UserDetails {
     }
 
     public User getUser() {
-        return user;
+        return profile.getUser();
     }
 }

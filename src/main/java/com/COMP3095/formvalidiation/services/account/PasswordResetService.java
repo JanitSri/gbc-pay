@@ -1,15 +1,7 @@
-/**********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Service class for the password reset feature.
- *********************************************************************************/
-
 package com.COMP3095.formvalidiation.services.account;
 
 import com.COMP3095.formvalidiation.models.PasswordResetToken;
+import com.COMP3095.formvalidiation.models.Profile;
 import com.COMP3095.formvalidiation.models.User;
 import com.COMP3095.formvalidiation.services.user.UserService;
 import com.COMP3095.formvalidiation.services.email.Email;
@@ -45,40 +37,39 @@ public class PasswordResetService {
         return passwordResetTokenService.validateToken(resetToken);
     }
 
-    private PasswordResetToken getPasswordResetTokenByUser(User user) {
-        return passwordResetTokenService.getByUser(user);
+    private PasswordResetToken getPasswordResetTokenByUser(Profile profile) {
+        return passwordResetTokenService.getByProfile(profile);
     }
 
     public boolean validPasswordResetToken(String resetToken) {
         PasswordResetToken passwordResetToken = getPasswordResetTokenByToken(resetToken);
-        if (passwordResetToken == null || passwordResetToken.isExpired()) return false;
-        return true;
+        return passwordResetToken != null && !passwordResetToken.isExpired();
     }
 
-    public void sendResetPasswordLink(User existingUser) throws MessagingException {
-        User user = userService.findByEmail(existingUser.getEmail());
+    public void sendResetPasswordLink(Profile existingProfile) throws MessagingException {
+        Profile profile = userService.findByEmail(existingProfile.getEmail());
 
-        PasswordResetToken currentToken = getPasswordResetTokenByUser(user);
+        PasswordResetToken currentToken = getPasswordResetTokenByUser(profile);
         if (currentToken == null) {
-            currentToken = passwordResetTokenService.createToken(user);
-            user.getPasswordResetToken().add(currentToken);
-            userService.saveUser(user);
+            currentToken = passwordResetTokenService.createToken(profile);
+            profile.getPasswordResetTokens().add(currentToken);
+            userService.saveProfile(profile);
         }
 
-        MimeMessage email = this.email.constructMessage(user, currentToken);
+        MimeMessage email = this.email.constructMessage(profile.getUser(), profile, currentToken);
         emailService.sendEmail(email);
     }
 
-    public boolean resetPassword(User existingUser, String resetToken) {
+    public boolean resetPassword(Profile existingProfile, String resetToken) {
 
         if (!validPasswordResetToken(resetToken)) return false;
 
         PasswordResetToken passwordResetToken = getPasswordResetTokenByToken(resetToken);
 
         passwordResetToken.setExpired(true);
-        User user = userService.findByEmail(passwordResetToken.getUser().getEmail());
-        user.setPassword(passwordEncoder.encode(existingUser.getPassword()));
-        userService.saveUser(user);
+        Profile profile = userService.findByEmail(passwordResetToken.getProfile().getEmail());
+        profile.setPassword(passwordEncoder.encode(existingProfile.getPassword()));
+        userService.saveProfile(profile);
 
         return true;
     }

@@ -17,10 +17,17 @@
       <div class="text-center">
         <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
       </div>
+
       <form class="user" th:action="@{/register}" th:object="${user}" method="post">
         <div>
-          <ul th:if="${#fields.hasErrors('*')}">
-            <li th:each="err : ${#fields.errors('*')}" th:text="${err}" class="text-danger"></li>
+          <ul th:if="${userFormError!=null and !userFormError.isEmpty()}">
+            <li th:each="err : ${userFormError}" th:text="${err}" class="text-danger"></li>
+          </ul>
+          <ul th:if="${profileFormError!=null and !profileFormError.isEmpty()}">
+            <li th:each="err : ${profileFormError}" th:text="${err}" class="text-danger"></li>
+          </ul>
+          <ul th:if="${addressFormError!=null and !addressFormError.isEmpty()}">
+            <li th:each="err : ${addressFormError}" th:text="${err}" class="text-danger"></li>
           </ul>
         </div>
         <div class="form-group row">
@@ -30,32 +37,51 @@
           <div class="col-sm-6">
             <input type="text" class="form-control form-control-user" placeholder="Last Name*" th:field="*{lastName}">
           </div>
-        </div>
-        <div class="form-group">
-          <input type="text" class="form-control form-control-user" placeholder="Address*" th:field="*{address}">
-        </div>
-        <div class="form-group">
-          <input type="email" class="form-control form-control-user" placeholder="Email Address*" th:field="*{email}">
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-6 mb-3 mb-sm-0">
-            <input type="password" class="form-control form-control-user" placeholder="Password*" th:field="*{password}">
-          </div>
-          <div class="col-sm-6">
-            <input type="password" class="form-control form-control-user" placeholder="Confirm Password*" th:field="*{confirmPassword}">
+          <div class="col-10 mt-3">
+            <label for="example-date-input" class="col-form-label">Date of Birth</label>
+            <input class="form-control form-control-user" type="date" id="example-date-input" th:field="*{dateOfBirth}">
           </div>
         </div>
-        <div class="mb-4 custom-control custom-checkbox">
-          <div class="d-flex justify-content-center">
-            <input type="checkbox" class="custom-control-input" id="customCheck" th:field="*{agreedToTerms}">
-            <label class="custom-control-label" for="customCheck">I agree to the <a href="#" data-toggle="modal" data-target="#termsModal">terms of service.</a></label>
+
+        <div th:object="${profile}">
+          <div class="form-group">
+            <input type="email" class="form-control form-control-user" placeholder="Email Address*" th:field="*{email}">
+          </div>
+
+          <div th:object="${address}">
+            <div class="form-group">
+              <input type="text" class="form-control form-control-user" placeholder="Street*" th:field="*{street}">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control form-control-user" placeholder="City*" th:field="*{city}">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control form-control-user" placeholder="Country*" th:field="*{country}">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+              <input type="password" class="form-control form-control-user" placeholder="Password*" th:field="*{password}">
+            </div>
+            <div class="col-sm-6">
+              <input type="password" class="form-control form-control-user" placeholder="Confirm Password*" th:field="*{confirmPassword}">
+            </div>
+          </div>
+          <div class="mb-4 custom-control custom-checkbox">
+            <div class="d-flex justify-content-center">
+              <input type="checkbox" class="custom-control-input" id="customCheck" th:field="*{agreedToTerms}">
+              <label class="custom-control-label" for="customCheck">I agree to the <a href="#" data-toggle="modal" data-target="#termsModal">terms of service.</a></label>
+            </div>
           </div>
         </div>
+
         <button type="submit" class="btn btn-primary btn-user btn-block">
           Register Account
         </button>
         <hr>
       </form>
+
       <hr>
       <div class="text-center">
         <a class="small" th:href="@{/login}">Already have an account? Login!</a>
