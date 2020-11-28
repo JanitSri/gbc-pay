@@ -36,19 +36,19 @@ public class PasswordResetService {
         return passwordResetTokenService.validateToken(resetToken);
     }
 
-    private PasswordResetToken getPasswordResetTokenByUser(Profile profile) {
+    private PasswordResetToken getPasswordResetTokenByProfile(Profile profile) {
         return passwordResetTokenService.getByProfile(profile);
     }
 
-    public boolean validPasswordResetToken(String resetToken) {
+    public boolean invalidPasswordResetToken(String resetToken) {
         PasswordResetToken passwordResetToken = getPasswordResetTokenByToken(resetToken);
-        return passwordResetToken != null && !passwordResetToken.isExpired();
+        return passwordResetToken == null || passwordResetToken.isExpired();
     }
 
     public void sendResetPasswordLink(Profile existingProfile) throws MessagingException {
         Profile profile = userService.findByEmail(existingProfile.getEmail());
 
-        PasswordResetToken currentToken = getPasswordResetTokenByUser(profile);
+        PasswordResetToken currentToken = getPasswordResetTokenByProfile(profile);
         if (currentToken == null) {
             currentToken = passwordResetTokenService.createToken(profile);
             profile.getPasswordResetTokens().add(currentToken);
@@ -61,7 +61,7 @@ public class PasswordResetService {
 
     public boolean resetPassword(Profile existingProfile, String resetToken) {
 
-        if (!validPasswordResetToken(resetToken)) return false;
+        if (invalidPasswordResetToken(resetToken)) return false;
 
         PasswordResetToken passwordResetToken = getPasswordResetTokenByToken(resetToken);
 

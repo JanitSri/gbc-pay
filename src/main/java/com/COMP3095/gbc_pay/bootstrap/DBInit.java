@@ -26,6 +26,7 @@ public class DBInit implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        // DEFAULT USER FOR TESTING
         User user = new User("john", "smith", LocalDate.parse("1990-01-20"));
 
         Profile profile2 = new Profile("test@hotmail.com", false, passwordEncoder.encode("test123"));
@@ -64,11 +65,9 @@ public class DBInit implements CommandLineRunner {
         profile2.setMessages(messages_second);
 
         Role role1 = new Role("USER");
-        Role role2 = new Role("ADMIN");
 
         Set<Role> roles2 = new HashSet<Role>() {{
             add(role1);
-            add(role2);
         }};
 
         profile2.setRoles(roles2);
@@ -82,11 +81,22 @@ public class DBInit implements CommandLineRunner {
 
         userRepository.save(user);
 
-        System.out.println("GETTING PROFILE...");
-        profileRepository.findByEmailIgnoreCase("john_smith_123@hotmail.com")
-                .ifPresentOrElse(
-                        profile -> profile.getRoles().forEach(r -> System.out.println(r.getRoleName())),
-                        () -> System.out.println("Profile does not exist"));
 
+        // DEFAULT ADMIN USER
+        User admin = new User("Admin", "Admin", LocalDate.parse("1975-01-01"));
+
+        Profile adminDefaultProfile = new Profile("admin@isp.net", true, passwordEncoder.encode("P@ssword1"));
+        Address adminAddress = new Address("Default Admin Street", "Default Admin City", "Default Admin Country", true, true);
+
+        adminDefaultProfile.setAddress(adminAddress);
+        adminAddress.setProfile(adminDefaultProfile);
+
+        Role adminRole = new Role("ADMIN");
+
+        adminDefaultProfile.getRoles().add(adminRole);
+
+        adminDefaultProfile.setUser(admin);
+        admin.getProfiles().add(adminDefaultProfile);
+        userRepository.save(admin);
     }
 }

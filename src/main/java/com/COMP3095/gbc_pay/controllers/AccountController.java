@@ -159,7 +159,7 @@ public class AccountController {
     public String getResetPassword(@RequestParam("token") String token, @ModelAttribute("profile") Profile profile, Model model,
                                    RedirectAttributes ra) {
 
-        if (!passwordResetService.validPasswordResetToken(token)) {
+        if (passwordResetService.invalidPasswordResetToken(token)) {
             ra.addFlashAttribute("error", "This password reset link is not valid.");
             return "redirect:/login";
         }
