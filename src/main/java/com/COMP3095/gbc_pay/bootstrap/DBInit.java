@@ -28,7 +28,7 @@ public class DBInit implements CommandLineRunner {
 
         User user = new User("john", "smith", LocalDate.parse("1990-01-20"));
 
-        Profile profile2 = new Profile("john_smith_123@hotmail.com", false, passwordEncoder.encode("123test"), LocalDate.now());
+        Profile profile2 = new Profile("test@hotmail.com", false, passwordEncoder.encode("test123"));
         Address address2 = new Address("123 Pine Blvd", "Mississauga", "Canada", true, true);
 
         profile2.setAddress(address2);

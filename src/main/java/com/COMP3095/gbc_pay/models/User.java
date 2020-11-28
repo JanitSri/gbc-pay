@@ -2,7 +2,10 @@ package com.COMP3095.gbc_pay.models;
 
 
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
@@ -29,6 +32,14 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Profile> profiles = new HashSet<>();
+
+    private LocalDate lastLogin;
+
+    @Transient
+    private LocalDate previousLoginDate;
+
+    @UpdateTimestamp
+    private LocalDate lastUpdate;
 
     public User() {
     }
@@ -77,6 +88,30 @@ public class User {
 
     public void setProfiles(Set<Profile> profiles) {
         this.profiles = profiles;
+    }
+
+    public LocalDate getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(LocalDate lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public LocalDate getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDate lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public LocalDate getPreviousLoginDate() {
+        return previousLoginDate;
+    }
+
+    public void setPreviousLoginDate(LocalDate previousLoginDate) {
+        this.previousLoginDate = previousLoginDate;
     }
 }
 

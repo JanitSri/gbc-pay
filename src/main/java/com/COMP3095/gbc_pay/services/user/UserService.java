@@ -27,12 +27,19 @@ public class UserService implements UserDetailsService {
         return userProfile.orElse(null);
     }
 
+    public User findByUser(User user){
+        Optional<User> foundUser = userRepository.findByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndDateOfBirth(
+                user.getFirstName(), user.getLastName(), user.getDateOfBirth());
+
+        return foundUser.orElse(null);
+    }
+
     public boolean userProfileExists(String email) {
         return findByEmail(email) != null;
     }
 
-    public void saveUser(User newUser) {
-        userRepository.save(newUser);
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 
     public void saveProfile(Profile profile) {

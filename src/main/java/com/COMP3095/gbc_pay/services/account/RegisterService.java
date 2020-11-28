@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.time.LocalDate;
 
 @Service
 public class RegisterService {
@@ -40,11 +39,14 @@ public class RegisterService {
     }
 
     public void registerNewUser(User newUser, Profile newProfile, Address newAddress) throws MessagingException {
+
+        User existingUser = userService.findByUser(newUser);
+
         newProfile.setEmailVerified(false);
         newProfile.setPassword(passwordEncoder.encode(newProfile.getPassword()));
-        newProfile.setLastLogin(LocalDate.now());
 
         newProfile.setAddress(newAddress);
+        newAddress.setProfile(newProfile);
 
         Role userRole = roleService.getRole("USER");
         newProfile.getRoles().add(userRole);
@@ -52,6 +54,10 @@ public class RegisterService {
 
         VerificationToken verificationToken = verificationTokenService.createToken(newProfile);
         newProfile.setVerificationToken(verificationToken);
+
+        if(existingUser != null){
+            newUser = existingUser;
+        }
 
         newProfile.setUser(newUser);
         newUser.getProfiles().add(newProfile);

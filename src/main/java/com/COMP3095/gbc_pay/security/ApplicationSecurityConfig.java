@@ -1,12 +1,3 @@
-/**********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Main configuration class for Spring security.
- *********************************************************************************/
-
 package com.COMP3095.gbc_pay.security;
 
 import com.COMP3095.gbc_pay.services.user.UserService;
@@ -20,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -28,12 +20,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserService userService,
-                                     AuthenticationEntryPoint authenticationEntryPoint) {
+                                     AuthenticationEntryPoint authenticationEntryPoint,
+                                     AuthenticationSuccessHandler authenticationSuccessHandler) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
     }
 
     @Override
@@ -55,7 +50,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .formLogin()
                         .loginPage("/login")
                             .permitAll()
-                            .defaultSuccessUrl("/dashboard", true)
+                            .successHandler(authenticationSuccessHandler)
                             .failureForwardUrl("/fail_login")
                             .passwordParameter("password")
                             .usernameParameter("username")

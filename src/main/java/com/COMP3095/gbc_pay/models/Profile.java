@@ -41,11 +41,6 @@ public class Profile {
     @AssertTrue(message = "Must agree to terms of service")
     private boolean agreedToTerms;
 
-    private LocalDate lastLogin;
-
-    @UpdateTimestamp
-    private LocalDate lastUpdate;
-
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "profile_role", // join table for user and role
@@ -80,11 +75,10 @@ public class Profile {
     public Profile() {
     }
 
-    public Profile(String email, boolean emailVerified, String password, LocalDate lastLogin) {
+    public Profile(String email, boolean emailVerified, String password) {
         this.email = email;
         this.emailVerified = emailVerified;
         this.password = password;
-        this.lastLogin = lastLogin;
     }
 
     public Long getId() {
@@ -125,22 +119,6 @@ public class Profile {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
-    }
-
-    public LocalDate getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(LocalDate lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
-    public LocalDate getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(LocalDate lastUpdate) {
-        this.lastUpdate = lastUpdate;
     }
 
     public Set<Role> getRoles() {

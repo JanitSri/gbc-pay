@@ -53,4 +53,6 @@ public class UserDetailsImp implements UserDetails {
     public User getUser() {
         return profile.getUser();
     }
+
+    public Profile getProfile() { return profile; }
 }
