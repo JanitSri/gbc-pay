@@ -1,12 +1,3 @@
-/**********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Custom entry point to deal with access denied (unauthorized access).
- *********************************************************************************/
-
 package com.COMP3095.gbc_pay.security;
 
 import org.springframework.security.core.AuthenticationException;

@@ -3,9 +3,12 @@ package com.COMP3095.gbc_pay.services.user;
 import com.COMP3095.gbc_pay.models.Profile;
 import com.COMP3095.gbc_pay.models.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class UserDetailsImp implements UserDetails {
 
@@ -17,7 +20,11 @@ public class UserDetailsImp implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<GrantedAuthority> authorities = new ArrayList<>(){{
+            add(new SimpleGrantedAuthority("ROLE_" + profile.getRole().getRoleName()));
+        }};
+
+        return authorities;
     }
 
     @Override

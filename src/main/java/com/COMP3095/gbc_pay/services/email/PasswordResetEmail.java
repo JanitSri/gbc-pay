@@ -1,12 +1,3 @@
-/********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 2
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: November 08, 2020
- * Description: Email message handler for sending email for password reset.
- *********************************************************************************/
-
 package com.COMP3095.gbc_pay.services.email;
 
 import com.COMP3095.gbc_pay.models.PasswordResetToken;

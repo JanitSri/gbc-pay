@@ -1,14 +1,12 @@
 package com.COMP3095.gbc_pay.models;
 
 import com.COMP3095.gbc_pay.validation.PasswordMatches;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,13 +39,8 @@ public class Profile {
     @AssertTrue(message = "Must agree to terms of service")
     private boolean agreedToTerms;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "profile_role", // join table for user and role
-            joinColumns = @JoinColumn(name = "profile_id"), // owner side
-            inverseJoinColumns = @JoinColumn(name = "role_id") // other side
-    )
-    private Set<Role> roles = new HashSet<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    private Role role;
 
     @ManyToOne
     private User user;
@@ -121,12 +114,12 @@ public class Profile {
         this.confirmPassword = confirmPassword;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role roles) {
+        this.role = roles;
     }
 
     public User getUser() {

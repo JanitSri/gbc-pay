@@ -2,7 +2,6 @@ package com.COMP3095.gbc_pay.bootstrap;
 
 
 import com.COMP3095.gbc_pay.models.*;
-import com.COMP3095.gbc_pay.repositories.ProfileRepository;
 import com.COMP3095.gbc_pay.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,12 +13,10 @@ import java.util.*;
 @Component
 public class DBInit implements CommandLineRunner {
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DBInit(UserRepository userRepository, ProfileRepository profileRepository, PasswordEncoder passwordEncoder) {
+    public DBInit(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.profileRepository = profileRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -66,11 +63,9 @@ public class DBInit implements CommandLineRunner {
 
         Role role1 = new Role("USER");
 
-        Set<Role> roles2 = new HashSet<Role>() {{
-            add(role1);
-        }};
+        profile2.setRole(role1);
+        role1.setProfile(profile2);
 
-        profile2.setRoles(roles2);
         profile2.setUser(user);
 
         Set<Profile> profiles = new HashSet<Profile>() {{
@@ -93,7 +88,8 @@ public class DBInit implements CommandLineRunner {
 
         Role adminRole = new Role("ADMIN");
 
-        adminDefaultProfile.getRoles().add(adminRole);
+        adminDefaultProfile.setRole(adminRole);
+        adminRole.setProfile(adminDefaultProfile);
 
         adminDefaultProfile.setUser(admin);
         admin.getProfiles().add(adminDefaultProfile);
