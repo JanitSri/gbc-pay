@@ -49,8 +49,9 @@ public class RegisterService {
         newAddress.setProfile(newProfile);
 
         Role userRole = roleService.getRole("USER");
-        newProfile.setRole(userRole);
-        userRole.setProfile(newProfile);
+
+        newProfile.getRoles().add(userRole);
+        userRole.getProfiles().add(newProfile);
 
         VerificationToken verificationToken = verificationTokenService.createToken(newProfile);
         newProfile.setVerificationToken(verificationToken);

@@ -99,7 +99,7 @@ public class AccountController {
         }
 
         if (registerService.accountExists(profile.getEmail())) {
-            model.addAttribute("infoForUser", "The user already exists.");
+            model.addAttribute("infoForUser", "The user profile already exists.");
             return "account/register";
         }
 

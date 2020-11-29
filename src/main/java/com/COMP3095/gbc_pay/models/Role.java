@@ -13,8 +13,8 @@ public class Role {
 
     private String roleName;
 
-    @OneToOne
-    private Profile profile;
+    @ManyToMany(mappedBy = "roles")
+    private Set<Profile> profiles = new HashSet<>();
 
     public Role() {
     }
@@ -39,11 +39,11 @@ public class Role {
         this.roleName = roleName;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public Set<Profile> getProfiles() {
+        return profiles;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setProfiles(Set<Profile> profiles) {
+        this.profiles = profiles;
     }
 }

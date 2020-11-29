@@ -31,7 +31,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             user.setPreviousLoginDate(LocalDate.now());
         }
 
-        if(userProfile.getRole().getRoleName().equals("USER")){
+        boolean isAdmin = userProfile.getRoles()
+                            .stream()
+                            .anyMatch(role -> role.getRoleName().equals("ADMIN"));
+
+        if(!isAdmin){
             httpServletResponse.sendRedirect("/dashboard");
         }else{
             httpServletResponse.sendRedirect("/dashboard/admin");

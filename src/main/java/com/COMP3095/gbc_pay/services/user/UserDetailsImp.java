@@ -20,10 +20,12 @@ public class UserDetailsImp implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>(){{
-            add(new SimpleGrantedAuthority("ROLE_" + profile.getRole().getRoleName()));
-        }};
+        List<GrantedAuthority> authorities = new ArrayList<>();
 
+        profile.getRoles()
+        .forEach(r -> {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + r.getRoleName()));
+        });
         return authorities;
     }
 
@@ -62,4 +64,10 @@ public class UserDetailsImp implements UserDetails {
     }
 
     public Profile getProfile() { return profile; }
+
+    public boolean isAdminAccount(){
+        return profile.getRoles()
+                .stream()
+                .anyMatch(role -> role.getRoleName().equals("ADMIN"));
+    }
 }

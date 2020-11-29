@@ -39,8 +39,13 @@ public class Profile {
     @AssertTrue(message = "Must agree to terms of service")
     private boolean agreedToTerms;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "profile_role", // join table for user and role
+            joinColumns = @JoinColumn(name = "profile_id"), // owner side
+            inverseJoinColumns = @JoinColumn(name = "role_id") // other side
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @ManyToOne
     private User user;
@@ -114,14 +119,6 @@ public class Profile {
         this.confirmPassword = confirmPassword;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role roles) {
-        this.role = roles;
-    }
-
     public User getUser() {
         return user;
     }
@@ -176,5 +173,13 @@ public class Profile {
 
     public void setAgreedToTerms(boolean agreedToTerms) {
         this.agreedToTerms = agreedToTerms;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
