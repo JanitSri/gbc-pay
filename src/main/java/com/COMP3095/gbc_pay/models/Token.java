@@ -58,4 +58,19 @@ public class Token {
     public void setUsedDate(LocalDate usedDate) {
         this.usedDate = usedDate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Token token = (Token) o;
+
+        return id != null ? id.equals(token.id) : token.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

@@ -5,7 +5,6 @@ package com.COMP3095.gbc_pay.models;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
@@ -34,9 +33,6 @@ public class User {
     private Set<Profile> profiles = new HashSet<>();
 
     private LocalDate lastLogin;
-
-    @Transient
-    private LocalDate previousLoginDate;
 
     @UpdateTimestamp
     private LocalDate lastUpdate;
@@ -106,12 +102,19 @@ public class User {
         this.lastUpdate = lastUpdate;
     }
 
-    public LocalDate getPreviousLoginDate() {
-        return previousLoginDate;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return id != null ? id.equals(user.id) : user.id == null;
     }
 
-    public void setPreviousLoginDate(LocalDate previousLoginDate) {
-        this.previousLoginDate = previousLoginDate;
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
 

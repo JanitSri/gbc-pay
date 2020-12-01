@@ -42,6 +42,12 @@ public class RegisterService {
 
         User existingUser = userService.findByUser(newUser);
 
+        if(existingUser != null){
+            newUser = existingUser;
+            newAddress.setDefaultBilling(true);
+            newAddress.setDefaultShipping(true);
+        }
+
         newProfile.setEmailVerified(false);
         newProfile.setPassword(passwordEncoder.encode(newProfile.getPassword()));
 
@@ -56,9 +62,6 @@ public class RegisterService {
         VerificationToken verificationToken = verificationTokenService.createToken(newProfile);
         newProfile.setVerificationToken(verificationToken);
 
-        if(existingUser != null){
-            newUser = existingUser;
-        }
 
         newProfile.setUser(newUser);
         newUser.getProfiles().add(newProfile);

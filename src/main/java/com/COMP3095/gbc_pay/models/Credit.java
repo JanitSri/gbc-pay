@@ -95,4 +95,19 @@ public class Credit {
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Credit credit = (Credit) o;
+
+        return id != null ? id.equals(credit.id) : credit.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

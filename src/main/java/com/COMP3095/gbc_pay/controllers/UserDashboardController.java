@@ -1,7 +1,9 @@
 package com.COMP3095.gbc_pay.controllers;
 
+import com.COMP3095.gbc_pay.services.dashboard.DashboardUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,11 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping({"/dashboard", "/dashboard.html"})
 public class UserDashboardController {
 
-    @GetMapping({"", "/index.html", "index"})
-    public String getIndexPage(){
-        return "dashboard/index";
+    private final DashboardUserService dashboardUserService;
+
+    public UserDashboardController(DashboardUserService dashboardUserService) {
+        this.dashboardUserService = dashboardUserService;
     }
 
+    @GetMapping({"", "/index.html", "index"})
+    public String getIndexPage(Model model){
+        model.addAttribute("currentProfile", dashboardUserService.getAuthenticatedProfile());
+        model.addAttribute("lastLogin", dashboardUserService.getLastLogin());
+        model.addAttribute("defaultBillingAddress", dashboardUserService.getBillingAddress());
+        model.addAttribute("defaultShippingAddress", dashboardUserService.getShippingAddress());
+
+        return "dashboard/user/index";
+    }
 
     @GetMapping({"my_profile", "my_profile.html"})
     @PreAuthorize("hasRole('ROLE_USER')")

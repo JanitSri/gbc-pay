@@ -20,6 +20,10 @@ public class Message {
     @NotBlank(message = "Cannot send an empty email")
     private String messageBody;
 
+    @Lob
+    @NotBlank(message = "Cannot send an empty reply email")
+    private String replyMessageBody;
+
     private boolean read;
 
     private LocalDateTime sentDateTime;
@@ -83,5 +87,28 @@ public class Message {
 
     public void setProfiles(Set<Profile> profiles) {
         this.profiles = profiles;
+    }
+
+    public String getReplyMessageBody() {
+        return replyMessageBody;
+    }
+
+    public void setReplyMessageBody(String replyMessageBody) {
+        this.replyMessageBody = replyMessageBody;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        return id != null ? id.equals(message.id) : message.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

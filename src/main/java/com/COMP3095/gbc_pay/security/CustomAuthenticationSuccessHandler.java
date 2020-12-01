@@ -1,7 +1,6 @@
 package com.COMP3095.gbc_pay.security;
 
 import com.COMP3095.gbc_pay.models.Profile;
-import com.COMP3095.gbc_pay.models.User;
 import com.COMP3095.gbc_pay.services.user.UserDetailsImp;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -11,8 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -23,13 +20,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
 
         Profile userProfile = ((UserDetailsImp) authentication.getPrincipal()).getProfile();
-        User user = userProfile.getUser();
-
-        user.setPreviousLoginDate(user.getLastLogin());
-
-        if(user.getPreviousLoginDate() == null){
-            user.setPreviousLoginDate(LocalDate.now());
-        }
 
         boolean isAdmin = userProfile.getRoles()
                             .stream()
