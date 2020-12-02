@@ -13,7 +13,13 @@ public class Role {
 
     private String roleName;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(
+            mappedBy = "roles",
+            fetch = FetchType.EAGER,
+            cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE}
+            )
     private Set<Profile> profiles = new HashSet<>();
 
     public Role() {

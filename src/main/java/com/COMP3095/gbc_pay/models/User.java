@@ -29,7 +29,7 @@ public class User {
     @Past(message = "Date of Birth should be in the past")
     private LocalDate dateOfBirth;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Profile> profiles = new HashSet<>();
 
     private LocalDate lastLogin;

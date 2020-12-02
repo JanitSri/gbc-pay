@@ -39,7 +39,13 @@ public class Profile {
     @AssertTrue(message = "Must agree to terms of service")
     private boolean agreedToTerms;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            }
+    )
     @JoinTable(
             name = "profile_role", // join table for user and role
             joinColumns = @JoinColumn(name = "profile_id"), // owner side
@@ -62,7 +68,7 @@ public class Profile {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
     private Set<PasswordResetToken> passwordResetTokens = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "profile_message", // join table for user and role
             joinColumns = @JoinColumn(name = "profile_id"), // owner side

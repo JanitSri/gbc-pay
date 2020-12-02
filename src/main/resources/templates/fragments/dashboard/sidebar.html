@@ -19,8 +19,8 @@
 
         <hr class="sidebar-divider my-0">
 
-        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/myProfile' or
-        #httpServletRequest.getRequestURI() == '/dashboard/admin/myProfile' ? 'active':''}">
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/my_profile' or
+        #httpServletRequest.getRequestURI() == '/dashboard/admin/my_profile' ? 'active':''}">
             <span th:if="${!#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
                 <a class="nav-link" th:href="@{/dashboard/my_profile}">
                     <i class="fas fa-user"></i>
@@ -36,7 +36,7 @@
             </span>
         </li>
 
-        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/creditProfile' or
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/credit_profile' or
         #httpServletRequest.getRequestURI() == '/dashboard/admin/users' ? 'active':''}">
             <span th:if="${!#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
                 <a class="nav-link" th:href="@{/dashboard/credit_profile}">

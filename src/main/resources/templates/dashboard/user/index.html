@@ -8,40 +8,71 @@
     </div>
     <div class="row">
       <div class="col-lg-5">
-        <div class="box1 card shadow mb-4" style="height: 725px">
+        <div class="box1 card shadow mb-4">
           <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+            <p class="m-0 font-weight-bold text-primary h4">Recent Activity</p>
           </div>
           <div class="card-body">
-            <p> Last Login Activity <span th:text="${lastLogin}" th:remove="tag"></span></p>
-            <p> Last User Profile Update <span th:text="${currentProfile.getUser().getLastUpdate()}" th:remove="tag"></span></p>
-            <p> Inbox UnRead <span th:text="0" th:remove="tag"></span></p>
-            <p> Inbox Read <span th:text="2" th:remove="tag"></span></p>
+
+            <div class="mb-4">
+              <p class="font-weight-bold">Last Login Activity</p>
+              <hr style="border-top: 2px solid #8c8b8b;width:90%;text-align:left;margin-left:0">
+              <p class="text-center" th:text="${lastLogin}"></p>
+            </div>
+
+            <div class="mb-4">
+              <p class="font-weight-bold">Last User Profile Update</p>
+              <hr style="border-top: 2px solid #8c8b8b;width:90%;text-align:left;margin-left:0">
+              <p class="text-center" th:text="${lastUpdate}"></p>
+            </div>
+
+            <div>
+              <p class="font-weight-bold">Inbox</p>
+              <hr style="border-top: 2px solid #8c8b8b;width:90%;text-align:left;margin-left:0">
+              <p class="text-center"> UnRead: <span th:text="0" th:remove="tag"></span></p>
+              <p class="text-center"> Read: <span th:text="2" th:remove="tag"></span></p>
+            </div>
+
           </div>
         </div>
       </div>
 
       <div class="col-lg-7">
-        <div class="box2 card shadow mb-4" style="height: 350px">
+        <div class="box2 card shadow mb-4">
           <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Current Profile</h6>
+            <p class="m-0 font-weight-bold text-primary h4">Current Profile</p>
           </div>
           <div class="card-body">
-            <p>First Name:  <span th:text="${#strings.capitalize(currentProfile.getUser().getLastUpdate())}" th:remove="tag"></span></p>
-            <p>Last Name:  <span th:text="${currentProfile.getUser().getLastUpdate()}" th:remove="tag"></span></p>
-            <p>Email:  <span th:text="${currentProfile.getUser().getLastUpdate()}" th:remove="tag"></span></p>
-            <p>D.O.B:  <span th:text="${currentProfile.getUser().getLastUpdate()}" th:remove="tag"></span></p>
-            <p>Address:  <span th:text="${currentProfile.getUser().getLastUpdate()}" th:remove="tag"></span></p>
-            <p>City:  <span th:text="${currentProfile.getUser().getLastUpdate()}" th:remove="tag"></span></p>
-            <p>Country:  <span th:text="${currentProfile.getUser().getLastUpdate()}" th:remove="tag"></span></p>
+            <p class="font-weight-bold text-center">First Name:  <span class="font-weight-normal" th:text="${#strings.capitalize(currentProfile.getUser().getFirstName())}"></span></p>
+            <p class="font-weight-bold text-center">Last Name:  <span class="font-weight-normal" th:text="${#strings.capitalize(currentProfile.getUser().getLastName())}"></span></p>
+            <p class="font-weight-bold text-center">Email:  <span class="font-weight-normal" th:text="${currentProfile.getEmail()}"></span></p>
+            <p class="font-weight-bold text-center">D.O.B:  <span class="font-weight-normal" th:text="${currentProfile.getUser().getDateOfBirth()}"></span></p>
+            <p class="font-weight-bold text-center">Address:  <span class="font-weight-normal" th:text="${currentProfile.getAddress().getStreet()}"></span></p>
+            <p class="font-weight-bold text-center">City:  <span class="font-weight-normal" th:text="${currentProfile.getAddress().getCity()}"></span></p>
+            <p class="font-weight-bold text-center">Country:  <span class="font-weight-normal" th:text="${currentProfile.getAddress().getCountry()}"></span></p>
           </div>
         </div>
 
-        <div class="box2 card shadow mb-4" style="height: 350px">
+        <div class="box2 card shadow mb-4">
           <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Addresses</h6>
+            <p class="m-0 font-weight-bold text-primary h4">Default Addresses</p>
           </div>
           <div class="card-body">
+            <div class="mb-5">
+              <p class="font-weight-bold">Preferred Billing Address</p>
+              <hr style="border-top: 2px solid #8c8b8b;width:90%;text-align:left;margin-left:0">
+              <p class="font-weight-bold text-center">Address:  <span class="font-weight-normal" th:text="${defaultBillingAddress.getStreet()}"></span></p>
+              <p class="font-weight-bold text-center">City:  <span class="font-weight-normal" th:text="${defaultBillingAddress.getCity()}"></span></p>
+              <p class="font-weight-bold text-center">Country:  <span class="font-weight-normal" th:text="${defaultBillingAddress.getCountry()}"></span></p>
+            </div>
+
+            <div>
+              <p class="font-weight-bold">Preferred Shipping Address</p>
+              <hr style="border-top: 2px solid #8c8b8b;width:90%;text-align:left;margin-left:0">
+              <p class="font-weight-bold text-center">Address:  <span class="font-weight-normal" th:text="${defaultShippingAddress.getStreet()}"></span></p>
+              <p class="font-weight-bold text-center">City:  <span class="font-weight-normal" th:text="${defaultShippingAddress.getCity()}"></span></p>
+              <p class="font-weight-bold text-center">Country:  <span class="font-weight-normal" th:text="${defaultShippingAddress.getCountry()}"></span></p>
+            </div>
           </div>
         </div>
       </div>
