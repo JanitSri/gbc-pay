@@ -51,8 +51,6 @@ public class DBInit implements CommandLineRunner {
         userRepository.save(admin);
 
 
-
-
         // Profile 1 - SAME USERS
         Profile profile1 = new Profile("test1@hotmail.com", false, passwordEncoder.encode("test123"));
         Address address1 = new Address("123 Main Street", "Toronto", "Canada", false, true);

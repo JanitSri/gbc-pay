@@ -233,20 +233,20 @@ public class UserDashboardController {
         return "dashboard/user/inbox";
     }
 
+    @GetMapping({"inbox/delete/{messageId}", "inbox.html/{messageId}"})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String deleteMessage(@PathVariable(name="messageId", required = false) Integer messageId,
+                                RedirectAttributes ra, Model model){
 
+        System.out.println("Deleting Message with the id: " + messageId);
 
+        if(messageId == null || messageId <= 0){
+            ra.addFlashAttribute("error", "Message could not be deleted.");
+        }
 
-
-
-
-
-
-
-
-
-
-
-
+        model.addAttribute("currentProfile", userProfileService.getAuthenticatedProfile());
+        return "redirect:/dashboard/inbox";
+    }
 
 
 
