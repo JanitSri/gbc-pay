@@ -2,8 +2,6 @@ package com.COMP3095.gbc_pay.bootstrap;
 
 
 import com.COMP3095.gbc_pay.models.*;
-import com.COMP3095.gbc_pay.repositories.ProfileRepository;
-import com.COMP3095.gbc_pay.repositories.RoleRepository;
 import com.COMP3095.gbc_pay.repositories.UserRepository;
 import com.COMP3095.gbc_pay.services.user.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -62,7 +60,7 @@ public class DBInit implements CommandLineRunner {
         profile1.setAddress(address1);
         address1.setProfile(profile1);
 
-        Credit credit1 = new Credit(CardType.AMERICAN_EXPRESS, LocalDate.parse("2022-01-20"), "John Smith",
+        Credit credit1 = new Credit(CardType.MASTER_CARD, "03 2022", "John Smith",
                 "1234 1234 1234 1234", true);
 
         Set<Credit> profile1_credit = new HashSet<Credit>(){{
@@ -104,7 +102,6 @@ public class DBInit implements CommandLineRunner {
         userRepository.save(user);
 
 
-
         // Profile 2 - SAME USERS
         Profile profile2 = new Profile("test2@hotmail.com", false, passwordEncoder.encode("test123"));
         Address address2 = new Address("123 Pine Blvd", "Mississauga", "Canada", true, false);
@@ -112,7 +109,7 @@ public class DBInit implements CommandLineRunner {
         profile2.setAddress(address2);
         address2.setProfile(profile2);
 
-        Credit credit2 = new Credit(CardType.VISA, LocalDate.parse("2022-01-20"), "John Smith",
+        Credit credit2 = new Credit(CardType.VISA, "04 2025", "John Smith",
                 "9876 9876 9876 9876", true);
 
         Set<Credit> profile2_credit = new HashSet<Credit>(){{

@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head.html :: head('My Profile', 'Client\'s profile of GBC Pay.')"></head>
 <body th:replace="fragments/dashboard/body.html :: bodyContent(~{::div})">
   <div class="container-fluid">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert"
+         th:if="${error}">
+      <span th:text="${error}" th:remove="tag"></span>
+      <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+    </div>
     <div class="alert alert-info alert-dismissible fade show" role="alert"
          th:if="${deletedEmail}">
       <span th:text="${deletedEmail}" th:remove="tag"></span>
@@ -18,7 +26,7 @@
         </span>
     </div>
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">Future Enhancement</h1>
+      <h1 class="h3 mb-0 text-gray-800">My Profile</h1>
     </div>
     <div class="row justify-content-center align-self-center">
 
@@ -29,57 +37,85 @@
           </div>
           <div class="card-body">
 
-            <form th:action="@{/dashboard/my_profile/update}" method="post">
-              <div class="form-row">
-                <div class="form-group col-md-6">
+            <form th:action="@{/dashboard/my_profile}" method="post">
+              <div>
+                <ul th:if="${userFormError!=null and !userFormError.isEmpty()}">
+                  <li th:each="err : ${userFormError}" th:text="${err}" class="text-danger"></li>
+                </ul>
+                <ul th:if="${profileFormError!=null and !profileFormError.isEmpty()}">
+                  <li th:each="err : ${profileFormError}" th:text="${err}" class="text-danger"></li>
+                </ul>
+                <ul th:if="${addressFormError!=null and !addressFormError.isEmpty()}">
+                  <li th:each="err : ${addressFormError}" th:text="${err}" class="text-danger"></li>
+                </ul>
+              </div>
+
+              <div class="form-row" th:object="${user}">
+                <div class="form-group col-md-4">
                   <label for="firstName">First Name</label>
-                  <input type="text" class="form-control" id="firstName" th:value="${#strings.capitalize(currentProfile.getUser().getFirstName())}">
+                  <input type="text" class="form-control" id="firstName" name="update-firstName"
+                         th:field="*{firstName}">
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                   <label for="lastName">Last Name</label>
-                  <input type="text" class="form-control" id="lastName" th:value="${#strings.capitalize(currentProfile.getUser().getLastName())}">
+                  <input type="text" class="form-control" id="lastName" name="update-lastName"
+                         th:field="*{lastName}">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="dob" class="col-form-label">Date of Birth</label>
+                  <input class="form-control" type="date" id="dob" name="update-dob"
+                         th:field="*{dateOfBirth}">
                 </div>
               </div>
 
-              <div class="form-row">
+              <div class="form-row" th:object="${profile}">
                 <div class="form-group col-md-6">
                   <label for="email">Email</label>
-                  <input type="text" class="form-control" id="email" th:value="${#strings.capitalize(currentProfile.getEmail())}" name="update-email">
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="dob" class="col-form-label">Date of Birth</label>
-                  <input class="form-control" type="date" id="dob" th:value="${currentProfile.getUser().getDateOfBirth()}">
+                  <input type="text" class="form-control" id="email" name="update-email"
+                         th:field="*{email}">
                 </div>
               </div>
 
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="street">Street</label>
-                  <input type="text" class="form-control" id="street" th:value="${currentProfile.getAddress().getStreet()}">
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="country" class="col-form-label">Country</label>
-                  <input class="form-control" id="country" th:value="${#strings.capitalize(currentProfile.getAddress().getCountry())}">
+              <div th:object="${address}">
+                <div class="form-row">
+                  <div class="form-group col-md-4">
+                    <label for="street">Street</label>
+                    <input type="text" class="form-control" id="street" name="update-street"
+                           th:field="*{street}">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="city" class="col-form-label">City</label>
+                    <input class="form-control" id="city" name="update-country"
+                           th:field="*{city}">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="country" class="col-form-label">Country</label>
+                    <input class="form-control" id="country" name="update-country"
+                           th:field="*{country}">
+                  </div>
+
+                  <div class="form-group mr-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="defaultShippingAddress" name="update-shipping"
+                             th:field="*{defaultShipping}">
+                      <label class="form-check-label" for="defaultShippingAddress">
+                        Default Shipping Address
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="defaultBillingAddress" name="update-billling"
+                             th:field="*{defaultBilling}">
+                      <label class="form-check-label" for="defaultBillingAddress">
+                        Default Billing Address
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="form-group">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="defaultShippingAddress" th:checked="${currentProfile.getAddress().isDefaultShipping()}">
-                  <label class="form-check-label" for="defaultShippingAddress">
-                    Default Shipping Address
-                  </label>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="defaultBillingAddress" th:checked="${currentProfile.getAddress().isDefaultBilling()}">
-                  <label class="form-check-label" for="defaultBillingAddress">
-                    Default Billing Address
-                  </label>
-                </div>
-              </div>
 
               <button type="submit" class="btn btn-primary">Update</button>
             </form>
@@ -149,7 +185,11 @@
               <div>
                   <form th:action="@{/dashboard/my_profile/delete}" method="post" th:id="${'deleteForm-' + profile.getEmail()}">
                     <input type="hidden" th:value="${profile.getEmail()}" name="delete-email">
-                    <button type="submit" class="btn btn-danger btn-user btn-block" th:form="${'deleteForm-' + profile.getEmail()}">Delete</button>
+                    <button th:if="${currentProfile.getId() != profile.getId()}" type="submit" class="btn btn-danger btn-user btn-block"
+                            th:form="${'deleteForm-' + profile.getEmail()}">Delete</button>
+                    <p th:if="${currentProfile.getId() == profile.getId()}" class="text-center font-weight-bold">
+                      Note: You cannot delete the currently logged in profile
+                    </p>
                   </form>
               </div>
               <hr style="border-top:2px solid #8c8b8b;width:100%;text-align:left">

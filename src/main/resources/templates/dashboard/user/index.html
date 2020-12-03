@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div class="col-lg-7">
+      <div class="col-lg-7 mb-4">
         <div class="box2 card shadow mb-4">
           <div class="card-header py-3">
             <p class="m-0 font-weight-bold text-primary h4">Current Profile</p>
@@ -61,17 +61,19 @@
             <div class="mb-5">
               <p class="font-weight-bold">Preferred Billing Address</p>
               <hr style="border-top: 2px solid #8c8b8b;width:90%;text-align:left;margin-left:0">
-              <p class="font-weight-bold text-center">Address:  <span class="font-weight-normal" th:text="${defaultBillingAddress.getStreet()}"></span></p>
-              <p class="font-weight-bold text-center">City:  <span class="font-weight-normal" th:text="${defaultBillingAddress.getCity()}"></span></p>
-              <p class="font-weight-bold text-center">Country:  <span class="font-weight-normal" th:text="${defaultBillingAddress.getCountry()}"></span></p>
+              <p th:if="${defaultBillingAddress == null}" class="font-weight-bold font-italic text-center" style="color: red">Please go to the 'My Profile' page and set your default billing address.</p>
+              <p class="font-weight-bold text-center">Address:  <span class="font-weight-normal" th:if="${defaultBillingAddress}" th:text="${defaultBillingAddress.getStreet()}"></span></p>
+              <p class="font-weight-bold text-center">City:  <span class="font-weight-normal" th:if="${defaultBillingAddress}" th:text="${defaultBillingAddress.getCity()}"></span></p>
+              <p class="font-weight-bold text-center">Country:  <span class="font-weight-normal" th:if="${defaultBillingAddress}" th:text="${defaultBillingAddress.getCountry()}"></span></p>
             </div>
 
             <div>
               <p class="font-weight-bold">Preferred Shipping Address</p>
               <hr style="border-top: 2px solid #8c8b8b;width:90%;text-align:left;margin-left:0">
-              <p class="font-weight-bold text-center">Address:  <span class="font-weight-normal" th:text="${defaultShippingAddress.getStreet()}"></span></p>
-              <p class="font-weight-bold text-center">City:  <span class="font-weight-normal" th:text="${defaultShippingAddress.getCity()}"></span></p>
-              <p class="font-weight-bold text-center">Country:  <span class="font-weight-normal" th:text="${defaultShippingAddress.getCountry()}"></span></p>
+              <p th:if="${defaultShippingAddress == null}" class="font-weight-bold font-italic text-center" style="color: red">Please go to the 'My Profile' page and set your default shipping address.</p>
+              <p class="font-weight-bold text-center">Address:  <span class="font-weight-normal" th:if="${defaultShippingAddress}" th:text="${defaultShippingAddress.getStreet()}"></span></p>
+              <p class="font-weight-bold text-center">City:  <span class="font-weight-normal" th:if="${defaultShippingAddress}" th:text="${defaultShippingAddress.getCity()}"></span></p>
+              <p class="font-weight-bold text-center">Country:  <span class="font-weight-normal" th:if="${defaultShippingAddress}" th:text="${defaultShippingAddress.getCountry()}"></span></p>
             </div>
           </div>
         </div>

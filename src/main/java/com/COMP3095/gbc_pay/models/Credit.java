@@ -1,5 +1,7 @@
 package com.COMP3095.gbc_pay.models;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -15,10 +17,10 @@ public class Credit {
     @Enumerated(EnumType.STRING)
     private CardType cardType;
 
-    @NotBlank(message = "City cannot be empty")
-    private LocalDate expirationDate;
+    @Pattern(regexp = "^(3[01]|[12][0-9]|0[1-9]) [0-9]{4}$", message = "Expiration date has to be in the format MM YYYY. e.x. 01 2020")
+    private String expirationDate;
 
-    @Pattern(regexp = "^[A-Za-z]+$", message = "Card Holder Name can only contain alphabets")
+    @NotBlank(message = "Card Holder Name cannot be empty")
     private String cardHolderName;
 
     @NotBlank(message = "Card Number cannot be empty")
@@ -32,7 +34,7 @@ public class Credit {
     public Credit() {
     }
 
-    public Credit(CardType cardType, LocalDate expirationDate, String cardHolderName, String cardHolderNumber, boolean defaultCard) {
+    public Credit(CardType cardType, String expirationDate, String cardHolderName, String cardHolderNumber, boolean defaultCard) {
         this.cardType = cardType;
         this.expirationDate = expirationDate;
         this.cardHolderName = cardHolderName;
@@ -56,11 +58,11 @@ public class Credit {
         this.cardType = cardType;
     }
 
-    public LocalDate getExpirationDate() {
+    public String getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDate expirationDate) {
+    public void setExpirationDate(String expirationDate) {
         this.expirationDate = expirationDate;
     }
 

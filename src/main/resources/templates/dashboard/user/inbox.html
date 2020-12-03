@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head('Inbox', 'Inbox of the client GBC Pay.')"></head>
+<body th:replace="fragments/dashboard/body.html :: bodyContent(~{::div})">
+<div class="container-fluid">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Inbox</h1>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="box1 card shadow mb-4">
+        <div class="card-header py-3">
+          <p class="m-0 font-weight-bold text-primary h4">Message Inbox</p>
+        </div>
+        <div class="card-body">
+
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">First</th>
+              <th scope="col">Last</th>
+              <th scope="col">Handle</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Jacob</td>
+              <td>Thornton</td>
+              <td>@fat</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Larry</td>
+              <td>the Bird</td>
+              <td>@twitter</td>
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div th:replace="fragments/dashboard/logout.html :: logout"></div>
+  <div th:replace="fragments/dashboard/scripts.html :: script"></div>
+</body>
+</html>

@@ -59,7 +59,7 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Credit> credits = new HashSet<Credit>();
 
     @OneToOne(cascade = CascadeType.ALL)
