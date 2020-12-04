@@ -4,7 +4,6 @@ import com.COMP3095.gbc_pay.models.*;
 import com.COMP3095.gbc_pay.services.dashboard.MessageService;
 import com.COMP3095.gbc_pay.services.dashboard.user.CreditProfileService;
 import com.COMP3095.gbc_pay.services.dashboard.user.UserProfileService;
-import com.sun.tools.jconsole.JConsolePlugin;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -233,7 +232,7 @@ public class UserDashboardController {
     @GetMapping({"inbox", "inbox.html"})
     @PreAuthorize("hasRole('ROLE_USER')")
     public String getInboxPage(Model model){
-        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+        Profile currProfile = userProfileService.getAuthenticatedProfile();
 
         model.addAttribute("allMessages", messageService.getFormattedMessages(currProfile));
         return "dashboard/user/inbox";

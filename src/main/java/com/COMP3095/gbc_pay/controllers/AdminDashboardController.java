@@ -6,17 +6,24 @@ import com.COMP3095.gbc_pay.models.Profile;
 import com.COMP3095.gbc_pay.models.User;
 import com.COMP3095.gbc_pay.services.dashboard.MessageService;
 import com.COMP3095.gbc_pay.services.dashboard.admin.AdminProfileService;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+@SuppressWarnings("DuplicatedCode")
 @Controller
 @RequestMapping({"/dashboard/admin", "/dashboard.html/admin"})
 @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -49,19 +56,14 @@ public class AdminDashboardController {
     }
 
 
-
-
-
-
     @GetMapping({"my_profile", "my_profile.html"})
     public String getAdminMyProfilePage(Model model){
 
         Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
 
         model.addAttribute("user", currProfile.getUser());
-        model.addAttribute("profile", currProfile.getUser());
+        model.addAttribute("profile", currProfile);
         model.addAttribute("address", currProfile.getAddress());
-
 
         return "dashboard/admin/my_profile";
     }
@@ -70,33 +72,52 @@ public class AdminDashboardController {
     public String updateAdminProfile(@ModelAttribute("user") @Valid User user, BindingResult userResult,
                                      @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
                                      @ModelAttribute("address") @Valid Address address, BindingResult addressResult,
-                                     Model model){
+                                     Model model, RedirectAttributes ra){
 
-        System.out.println("Updating the ADMIN profile of" + profile.getEmail());
-        return "dashboard/admin/my_profile";
+        System.out.println("Updating the ADMIN profile of " + profile.getEmail());
+
+        List<ObjectError> filteredProfileErrors = new ArrayList<>();
+        if(profileResult.getErrorCount() > 0){
+            for (ObjectError o: profileResult.getAllErrors()){
+                if( !Objects.equals(o.getDefaultMessage(), "Confirm Password cannot be empty")
+                        && !Objects.equals(o.getDefaultMessage(), "Must agree to terms of service")
+                        && !Objects.equals(o.getDefaultMessage(), "Password fields must match")){
+                    filteredProfileErrors.add(o);
+                }
+            }
+        }
+
+        if (userResult.hasErrors() || filteredProfileErrors.size() > 0 || addressResult.hasErrors()) {
+
+            List<String> profileErrorMessages = filteredProfileErrors.stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            model.addAttribute("profileFormError", profileErrorMessages);
+
+            List<String> userErrorMessages = userResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            model.addAttribute("userFormError", userErrorMessages);
+
+            List<String> addressErrorMessages = addressResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+
+            model.addAttribute("addressFormError", addressErrorMessages);
+
+            return "dashboard/admin/my_profile";
+        }
+
+        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+
+        adminProfileService.updateAdminProfile(profile, currProfile, user, address);
+        model.addAttribute("currentProfile", adminProfileService.getAuthenticatedAdminProfile());
+        ra.addFlashAttribute("updatedProfile", "Admin profile has been updated.");
+
+        return "redirect:/dashboard/admin/my_profile";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @GetMapping({"users", "users.html", "users/{userId}", "users.html/{userId}"})
     public String getAdminUsersPage(Model model, @PathVariable(name="userId", required = false) Long userId,
@@ -128,7 +149,8 @@ public class AdminDashboardController {
 
     @GetMapping({"inbox", "inbox.html"})
     public String getInboxPage(Model model){
-        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+        Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
+        model.addAttribute("currentProfile", currProfile);
 
         model.addAttribute("allMessages", messageService.getFormattedMessages(currProfile));
         return "dashboard/admin/inbox";

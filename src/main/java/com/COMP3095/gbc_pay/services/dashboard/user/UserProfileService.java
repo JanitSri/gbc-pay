@@ -20,7 +20,7 @@ public class UserProfileService {
 
     public Profile getAuthenticatedProfile(){
         Profile p = ((UserDetailsImp) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getProfile();
-        return userService.findByEmail(p.getEmail());
+        return userService.findByProfileById(p.getId());
     }
 
     public LocalDate getLastLogin(){

@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class MessageService {
@@ -50,6 +47,7 @@ public class MessageService {
             formattedMessages.add(temp);
         }
 
+        Collections.reverse(formattedMessages);
         return formattedMessages;
     }
 
