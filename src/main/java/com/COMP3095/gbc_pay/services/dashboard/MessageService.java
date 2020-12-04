@@ -41,9 +41,10 @@ public class MessageService {
                 add(m.getSubject());
                 add(m.getMessageBody());
                 add(m.getReplyMessageBody());
-                add(m.getSentDateTime().format(DateTimeFormatter.ofPattern("EE, LLL dd,yyyy h:ma")));
+                add(m.getSentDateTime().format(DateTimeFormatter.ofPattern("EE, LLL dd,yyyy h:mma")));
                 add(m.isRead());
                 add(m.isHasReply());
+                add(getSender(profile, Math.toIntExact(m.getId())));
             }};
 
             formattedMessages.add(temp);
@@ -74,19 +75,20 @@ public class MessageService {
                 .orElse(null);
     }
 
-    public void deleteMessage(Integer messageId){
-        Message message = messageRepository.findById(Long.valueOf(messageId)).orElse(null);
+    public void deleteMessage(Profile profile, Integer messageId){
+        messageRepository.findById(Long.valueOf(messageId))
+                .ifPresent(
+                        message -> message.getProfiles()
+                                .removeIf(profile1 -> profile1.getId().equals(profile.getId()))
+                );
 
-        if(message != null){
-            Set<Profile> tempProfiles = message.getProfiles();
-            message.getProfiles().clear();
-            messageRepository.save(message);
+        Profile dbProfile = userService.findByProfileById(profile.getId());
 
-            for(Profile p: tempProfiles){
-                p.getMessages().removeIf(message1 -> message1.getId().equals(Long.valueOf(messageId)));
-                userService.saveProfile(p);
-            }
+        if(dbProfile != null){
+            dbProfile.getMessages().removeIf(message -> message.getId().equals(Long.valueOf(messageId)));
         }
+
+        userService.saveProfile(dbProfile);
 
         messageRepository.deleteById(Long.valueOf(messageId));
     }
@@ -119,9 +121,25 @@ public class MessageService {
         messageRepository.save(message);
     }
 
-    public void sendAdminMessage(Profile profile, Message message){
-        // TODO
-        // when sending the reply message set hasReply to true and read to false
+    public Profile getSender(Profile profile, Integer messageId){
+        Message message = getMessageById(profile, messageId);
+        return message.getProfiles()
+                .stream()
+                .filter(profile1 -> !profile1.getId().equals(profile.getId()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void sendAdminMessage(Message message){
+        Message dbMessage = messageRepository.findById(message.getId()).orElse(null);
+
+        if(dbMessage != null && dbMessage.getReplyMessageBody() == null){
+            System.out.println("Message has been found");
+            dbMessage.setHasReply(true);
+            dbMessage.setRead(false);
+            dbMessage.setReplyMessageBody(message.getReplyMessageBody());
+            messageRepository.save(dbMessage);
+        }
     }
 }
 

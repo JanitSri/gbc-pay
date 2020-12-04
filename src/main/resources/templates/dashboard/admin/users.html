@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head('Users', 'All Profiles of the system.')"></head>
+<body th:replace="fragments/dashboard/body.html :: bodyContent(~{::div})">
+<div class="container-fluid">
+  <div class="alert alert-info alert-dismissible fade show" role="alert"
+       th:if="${userDelete}">
+    <span th:text="${userDelete}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert"
+       th:if="${userDeleteError}">
+    <span th:text="${userDeleteError}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">User Listing</h1>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="box1 card shadow mb-4">
+        <div class="card-header py-3">
+          <p class="m-0 font-weight-bold text-primary h4">Users</p>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead class="text-center">
+            <tr>
+              <th scope="col">User ID#</th>
+              <th scope="col">First Name</th>
+              <th scope="col">Last Name</th>
+              <th scope="col">Role</th>
+              <th scope="col">Email</th>
+              <th scope="col">Address</th>
+              <th scope="col">Registration Date</th>
+              <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+            <span th:each="user : ${allUsers}" th:remove="tag">
+                <tr>
+                  <th scope="row" th:text="${user.getId()}"></th>
+                  <td th:text="${user.getUser().getFirstName()}"></td>
+                  <td th:text="${user.getUser().getLastName()}"></td>
+
+                  <td>
+                    <span th:each="role : ${user.getRoles()}" th:remove="tag">
+                      <span th:text="${role.getRoleName()}"></span>
+                    </span>
+                  </td>
+
+                  <td th:text="${user.getEmail()}"></td>
+                  <td th:text="${user.getAddress().getStreet() + ', ' + user.getAddress().getCity() + ', ' + user.getAddress().getCountry()}"></td>
+                  <td th:text="${#dates.format(user.getRegistrationDate(), 'EEEE, LLLL dd,yyyy h:mma')}"></td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <a th:if="${user.getId() != currentProfile.getId()}" class="btn btn-outline-danger" th:href="@{users/{userId}(userId=${user.getId()})}">Delete</a>
+                      <p th:if="${user.getId() == currentProfile.getId()}" class="font-weight-bold">Current Logged In Admin Cannot Be Deleted</p>
+                    </div>
+                  </td>
+                </tr>
+             </span>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div th:replace="fragments/dashboard/logout.html :: logout"></div>
+  <div th:replace="fragments/dashboard/scripts.html :: script"></div>
+</body>
+</html>

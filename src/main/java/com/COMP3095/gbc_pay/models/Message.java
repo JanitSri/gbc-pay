@@ -25,7 +25,8 @@ public class Message {
     private String messageBody;
 
     @Lob
-    @NotBlank(message = "The reply message cannot be empty.")
+    @NotBlank(message = "The message cannot be empty.")
+    @Size(max = 225, message = "The message has to be less than 225 characters.")
     private String replyMessageBody;
 
     private boolean read;
@@ -34,7 +35,7 @@ public class Message {
 
     private LocalDateTime sentDateTime;
 
-    @ManyToMany(mappedBy = "messages")
+    @ManyToMany(mappedBy = "messages", fetch = FetchType.EAGER)
     private Set<Profile> profiles = new HashSet<>();
 
     public Message() {

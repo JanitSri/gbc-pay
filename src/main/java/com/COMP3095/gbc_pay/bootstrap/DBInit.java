@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -35,8 +36,20 @@ public class DBInit implements CommandLineRunner {
 
 
         // ADMIN
-        Profile adminDefaultProfile = new Profile("admin@isp.net", true, passwordEncoder.encode("P@ssword1"));
+        Profile adminDefaultProfile = new Profile("admin@hotmail.com", true, passwordEncoder.encode("test123"));
         Address adminAddress = new Address("Default Admin Street", "Default Admin City", "Default Admin Country", true, true);
+
+        Message adminMessage = new Message("Login Not Working",
+                "I need help logging into to my account",
+                true);
+
+        adminMessage.setSentDateTime(LocalDateTime.now().minusDays(1L));
+
+        List<Message> admin_messages = new ArrayList<>() {{
+            add(adminMessage);
+        }};
+
+        adminDefaultProfile.setMessages(admin_messages);
 
         adminDefaultProfile.getRoles().add(role_admin);
         role_admin.getProfiles().add(adminDefaultProfile);

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -90,6 +91,10 @@ public class UserService implements UserDetailsService {
     public void updateProfile(Profile profile, User user){
         profileRepository.save(profile);
 
+    }
+
+    public List<Profile> getAllProfiles(){
+        return (List<Profile>) profileRepository.findAll();
     }
 
     public void saveCard(Credit card){

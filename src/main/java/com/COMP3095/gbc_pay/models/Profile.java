@@ -1,16 +1,14 @@
 package com.COMP3095.gbc_pay.models;
 
 import com.COMP3095.gbc_pay.validation.PasswordMatches;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @PasswordMatches(first = "password", second = "confirmPassword", message = "Password fields must match")
 @Entity
@@ -25,6 +23,9 @@ public class Profile {
     private String email;
 
     private boolean emailVerified;
+
+    @CreationTimestamp
+    private Date registrationDate;
 
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,12}$",
             message = "Password must be between 6-12 characters, contain at least 1 uppercase letter and " +
@@ -187,6 +188,14 @@ public class Profile {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date joinedDatetime) {
+        this.registrationDate = joinedDatetime;
     }
 
     @Override
