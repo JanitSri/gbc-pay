@@ -1,13 +1,12 @@
 package com.COMP3095.gbc_pay.controllers;
 
-import com.COMP3095.gbc_pay.models.Address;
-import com.COMP3095.gbc_pay.models.Credit;
-import com.COMP3095.gbc_pay.models.Profile;
-import com.COMP3095.gbc_pay.models.User;
+import com.COMP3095.gbc_pay.models.*;
+import com.COMP3095.gbc_pay.services.dashboard.MessageService;
 import com.COMP3095.gbc_pay.services.dashboard.user.CreditProfileService;
-import com.COMP3095.gbc_pay.services.dashboard.user.UserMessageService;
 import com.COMP3095.gbc_pay.services.dashboard.user.UserProfileService;
+import com.sun.tools.jconsole.JConsolePlugin;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,13 +31,13 @@ public class UserDashboardController {
 
     private final UserProfileService userProfileService;
     private final CreditProfileService creditProfileService;
-    private final UserMessageService userMessageService;
+    private final MessageService messageService;
 
     public UserDashboardController(UserProfileService userProfileService, CreditProfileService creditProfileService,
-                                   UserMessageService userMessageService) {
+                                   MessageService messageService) {
         this.userProfileService = userProfileService;
         this.creditProfileService = creditProfileService;
-        this.userMessageService = userMessageService;
+        this.messageService = messageService;
     }
 
     @GetMapping({"", "/index.html", "index"})
@@ -54,6 +53,10 @@ public class UserDashboardController {
 
         model.addAttribute("defaultBillingAddress", userProfileService.getBillingAddress());
         model.addAttribute("defaultShippingAddress", userProfileService.getShippingAddress());
+
+        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+        model.addAttribute("readMessages", messageService.getReadMessagesCount(currProfile));
+        model.addAttribute("unReadMessages", messageService.getUnReadMessagesCount(currProfile));
 
         return "dashboard/user/index";
     }
@@ -229,22 +232,65 @@ public class UserDashboardController {
 
     @GetMapping({"inbox", "inbox.html"})
     @PreAuthorize("hasRole('ROLE_USER')")
-    public String getInboxPage(){
+    public String getInboxPage(Model model){
+        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+
+        model.addAttribute("allMessages", messageService.getFormattedMessages(currProfile));
         return "dashboard/user/inbox";
     }
 
-    @GetMapping({"inbox/delete/{messageId}", "inbox.html/{messageId}"})
+    @GetMapping({"inbox/read/{messageId}", "inbox.html/read/{messageId}"})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void getReadMessage(@PathVariable(name="messageId", required = false) Integer messageId, Model model){
+        System.out.println("The current read message is " + messageId);
+
+        messageService.readMessage(messageId);
+
+        model.addAttribute("currentProfile", userProfileService.getAuthenticatedProfile());
+    }
+
+    @GetMapping({"inbox/delete/{messageId}", "inbox.html/delete/{messageId}"})
     @PreAuthorize("hasRole('ROLE_USER')")
     public String deleteMessage(@PathVariable(name="messageId", required = false) Integer messageId,
                                 RedirectAttributes ra, Model model){
 
         System.out.println("Deleting Message with the id: " + messageId);
 
-        if(messageId == null || messageId <= 0){
+        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+
+        if(messageId == null || messageService.getMessageById(currProfile, messageId) == null){
             ra.addFlashAttribute("error", "Message could not be deleted.");
         }
 
+        messageService.deleteMessage(currProfile, messageId);
+
         model.addAttribute("currentProfile", userProfileService.getAuthenticatedProfile());
+        ra.addFlashAttribute("deleteMessage", "Message with ticket number " + messageId + " has been deleted.");
+        return "redirect:/dashboard/inbox";
+    }
+
+
+    @GetMapping({"support", "support.html"})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String getSupportPage(@ModelAttribute("message") Message message){
+        return "dashboard/user/support";
+    }
+
+    @PostMapping({"support", "support.html"})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public String sendMessage(Model model, RedirectAttributes ra, @ModelAttribute("message") @Valid Message message, BindingResult result){
+        System.out.println("Sending a message with subject: " + message.getSubject());
+
+         if(result.hasFieldErrors("subject") || result.hasFieldErrors("messageBody")){
+             return "dashboard/user/support";
+         }
+
+        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+        messageService.sendMessage(currProfile, message);
+
+        model.addAttribute("currentProfile", userProfileService.getAuthenticatedProfile());
+        ra.addFlashAttribute("messageSent", "Your message has been sent.");
         return "redirect:/dashboard/inbox";
     }
 
@@ -253,9 +299,35 @@ public class UserDashboardController {
 
 
 
-    @GetMapping({"support", "support.html"})
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public String getSupportPage(){
-        return "dashboard/support";
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+

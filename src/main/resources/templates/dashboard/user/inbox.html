@@ -10,6 +10,20 @@
           <span aria-hidden="true">&times;</span>
         </span>
   </div>
+  <div class="alert alert-info alert-dismissible fade show" role="alert"
+       th:if="${deleteMessage}">
+    <span th:text="${deleteMessage}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
+  <div class="alert alert-success alert-dismissible fade show" role="alert"
+       th:if="${messageSent}">
+    <span th:text="${messageSent}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Inbox</h1>
   </div>
@@ -20,7 +34,6 @@
           <p class="m-0 font-weight-bold text-primary h4">Message Inbox</p>
         </div>
         <div class="card-body">
-
           <table class="table">
             <thead class="text-center">
             <tr>
@@ -31,64 +44,40 @@
             </tr>
             </thead>
             <tbody class="text-center">
-
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>
-                  <div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-outline-primary mr-3" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-                       aria-controls="collapseExample">Read</a>
-                    <a class="btn btn-outline-danger" th:href="@{inbox/delete/{messageId}(messageId=1)}">Delete</a>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="4">
-                  <div class="collapse" id="collapseExample">
-                    <div class="card card-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil
-                      anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+            <span th:each="message : ${allMessages}" th:remove="tag">
+                <tr>
+                  <th scope="row" th:text="${message.get(0)}"></td>
+                  <td th:text="${message.get(4)}"></td>
+                  <td class="font-weight-bold" th:text="${message.get(1)}" th:id="${'subject-' + message.get(0)}"></td>
+                  <td>
+                    <div class="btn-group" role="group" aria-label="message-body">
+                      <a class="btn btn-outline-primary mr-3" data-toggle="collapse" th:href="${'#collapseExample-'+message.get(0)}"
+                         role="button" aria-expanded="false" th:attr="onclick=|upload('${message.get(0)}')|">
+                        Read
+                      </a>
+                      <a class="btn btn-outline-danger" th:href="@{inbox/delete/{messageId}(messageId=${message.get(0)})}">Delete</a>
                     </div>
-                  </div>
-                </td>
-              </tr>
-
-
-              <tr>
-                <th scope="row">1</th>
-                <td>James</td>
-                <td>Brown</td>
-                <td>
-                  <div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-outline-primary mr-3" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false"
-                       aria-controls="collapseExample2">Read</a>
-                    <a class="btn btn-outline-danger" th:href="@{inbox/delete/{messageId}(messageId=2)}">Delete</a>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="4">
-                  <div class="collapse" id="collapseExample2">
-                    <div class="card card-body">
-                      Second One Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil
-                      anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4">
+                    <div class="collapse" th:id="${'collapseExample-'+message.get(0)}">
+                      <div class="card card-body">
+                        <p class="font-weight-bold">Message Body: <span class="font-weight-normal" th:text="${message.get(2)}"></span></p>
+                        <p class="font-weight-bold" th:if="${message.get(3) != null}">Reply: <span class="font-weight-normal" th:text="${message.get(2)}"></span></p>
+                        <p class="font-weight-bold" th:if="${message.get(3) == null}">Reply:</p>
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-
+                  </td>
+                </tr>
+             </span>
             </tbody>
           </table>
-
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
   <div th:replace="fragments/dashboard/logout.html :: logout"></div>
   <div th:replace="fragments/dashboard/scripts.html :: script"></div>
 </body>

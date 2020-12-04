@@ -29,8 +29,8 @@
             <div>
               <p class="font-weight-bold">Inbox</p>
               <hr style="border-top: 2px solid #8c8b8b;width:90%;text-align:left;margin-left:0">
-              <p class="text-center"> UnRead: <span th:text="0" th:remove="tag"></span></p>
-              <p class="text-center"> Read: <span th:text="2" th:remove="tag"></span></p>
+              <p class="text-center"> Unread: <span th:text="${unReadMessages}" th:remove="tag"></span></p>
+              <p class="text-center"> Read: <span th:text="${readMessages}" th:remove="tag"></span></p>
             </div>
 
           </div>

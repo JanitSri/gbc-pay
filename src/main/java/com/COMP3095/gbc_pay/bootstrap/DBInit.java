@@ -126,7 +126,6 @@ public class DBInit implements CommandLineRunner {
                 false);
 
         List<Message> messages_second = new ArrayList<>() {{
-            add(message1);
             add(message2);
         }};
 

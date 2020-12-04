@@ -17,5 +17,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.2/js/sb-admin-2.min.js"
             integrity="sha512-3J1ESkoLygQ8zIYv8+fD+WRuEJ/TuEhjd+ib/K7bOzAt5QbUhrlFV+1u3VsFUMydEBRdeBBMUZ8J2FUKTeWGfw=="
             crossorigin="anonymous"></script>
+
+    <script>
+        function upload(messageId){
+            const URL = "http://localhost:8081/dashboard/inbox/read/"+messageId;
+            fetch(URL)
+            .then(value => console.log("request has beend sent"))
+            .catch(reason => console.log("error in sending request " + reason));
+
+            let element = document.getElementById('subject-' + messageId);
+            element.classList.remove("font-weight-bold");
+        }
+    </script>
 </div>
 </html>

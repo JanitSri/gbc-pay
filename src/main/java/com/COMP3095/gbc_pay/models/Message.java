@@ -1,7 +1,9 @@
 package com.COMP3095.gbc_pay.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,15 +15,18 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Add subject line before sending a messgae")
+    @Lob
+    @NotBlank(message = "The subject cannot be empty.")
+    @Size(max = 30, message = "The subject has to be less than 30 characters.")
     private String subject;
 
     @Lob
-    @NotBlank(message = "Cannot send an empty email")
+    @NotBlank(message = "The message cannot be empty.")
+    @Size(max = 225, message = "The message has to be less than 225 characters.")
     private String messageBody;
 
     @Lob
-    @NotBlank(message = "Cannot send an empty reply email")
+    @NotBlank(message = "The reply message cannot be empty.")
     private String replyMessageBody;
 
     private boolean read;
