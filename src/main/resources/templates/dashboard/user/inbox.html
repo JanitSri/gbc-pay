@@ -40,6 +40,7 @@
               <th scope="col">Ticker #</th>
               <th scope="col">Date Added</th>
               <th scope="col">Subject</th>
+              <th scope="col">Has Reply</th>
               <th scope="col">Actions</th>
             </tr>
             </thead>
@@ -48,11 +49,17 @@
                 <tr>
                   <th scope="row" th:text="${message.get(0)}"></td>
                   <td th:text="${message.get(4)}"></td>
-                  <td class="font-weight-bold" th:text="${message.get(1)}" th:id="${'subject-' + message.get(0)}"></td>
+                  <td th:class="${message.get(6)} ? 'font-weight-bold' : 'font-weight-normal'"  th:text="${message.get(1)}" th:id="${'subject-' + message.get(0)}"></td>
+                  <td class="font-weight-bold text-success" th:if="${message.get(6)}">Yes</td>
+                  <td class="font-weight-bold text-danger" th:if="${!message.get(6)}">No</td>
                   <td>
                     <div class="btn-group" role="group" aria-label="message-body">
-                      <a class="btn btn-outline-primary mr-3" data-toggle="collapse" th:href="${'#collapseExample-'+message.get(0)}"
+                      <a th:if="${message.get(6)}" class="btn btn-outline-primary mr-3" data-toggle="collapse" th:href="${'#collapseExample-'+message.get(0)}"
                          role="button" aria-expanded="false" th:attr="onclick=|upload('${message.get(0)}')|">
+                        Read
+                      </a>
+                      <a th:if="${!message.get(6)}" class="btn btn-outline-primary mr-3" data-toggle="collapse" th:href="${'#collapseExample-'+message.get(0)}"
+                         role="button" aria-expanded="false">
                         Read
                       </a>
                       <a class="btn btn-outline-danger" th:href="@{inbox/delete/{messageId}(messageId=${message.get(0)})}">Delete</a>
@@ -60,15 +67,17 @@
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="4">
+                  <td></td>
+                  <td colspan="3">
                     <div class="collapse" th:id="${'collapseExample-'+message.get(0)}">
                       <div class="card card-body">
-                        <p class="font-weight-bold">Message Body: <span class="font-weight-normal" th:text="${message.get(2)}"></span></p>
+                        <p class="font-weight-bold">Sent Message Body: <span class="font-weight-normal" th:text="${message.get(2)}"></span></p>
                         <p class="font-weight-bold" th:if="${message.get(3) != null}">Reply: <span class="font-weight-normal" th:text="${message.get(2)}"></span></p>
                         <p class="font-weight-bold" th:if="${message.get(3) == null}">Reply:</p>
                       </div>
                     </div>
                   </td>
+                  <td></td>
                 </tr>
              </span>
             </tbody>

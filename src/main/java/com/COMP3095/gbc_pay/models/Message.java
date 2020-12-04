@@ -1,7 +1,6 @@
 package com.COMP3095.gbc_pay.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -30,6 +29,8 @@ public class Message {
     private String replyMessageBody;
 
     private boolean read;
+
+    private boolean hasReply;
 
     private LocalDateTime sentDateTime;
 
@@ -115,5 +116,13 @@ public class Message {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    public boolean isHasReply() {
+        return hasReply;
+    }
+
+    public void setHasReply(boolean hasReply) {
+        this.hasReply = hasReply;
     }
 }

@@ -263,7 +263,7 @@ public class UserDashboardController {
             ra.addFlashAttribute("error", "Message could not be deleted.");
         }
 
-        messageService.deleteMessage(currProfile, messageId);
+        messageService.deleteMessage(messageId);
 
         model.addAttribute("currentProfile", userProfileService.getAuthenticatedProfile());
         ra.addFlashAttribute("deleteMessage", "Message with ticket number " + messageId + " has been deleted.");

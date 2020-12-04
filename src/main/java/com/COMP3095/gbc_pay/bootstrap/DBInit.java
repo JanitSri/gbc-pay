@@ -74,7 +74,7 @@ public class DBInit implements CommandLineRunner {
 
         Message message1 = new Message("Login Error",
                 "I having trouble logging into my account.",
-                false);
+                true);
 
         List<Message> messages_first = new ArrayList<>() {{
             add(message1);
@@ -123,7 +123,7 @@ public class DBInit implements CommandLineRunner {
 
         Message message2 = new Message("Error has been fixed",
                 "You should be able to login into your account now.",
-                false);
+                true);
 
         List<Message> messages_second = new ArrayList<>() {{
             add(message2);
