@@ -13,7 +13,7 @@
     - Password reset feature
     - Email verification feature
     - Different features for admin and users
-    - Messaging feature for communication between admin and users 
+    - Messaging feature for support communication between admin and users 
     - Admin controls for the application 
     - Thymeleaf for templating (with Bootstrap)     
 
