@@ -1,6 +1,7 @@
 package com.COMP3095.gbc_pay.security;
 
 import com.COMP3095.gbc_pay.services.user.UserService;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -9,9 +10,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -64,7 +68,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .headers()
                     .frameOptions()
-                    .sameOrigin();
+                    .sameOrigin()
+                .and()
+                    .sessionManagement()
+                    .maximumSessions(100)               //(1)
+                    .maxSessionsPreventsLogin(false)    //(2)
+                    .expiredUrl("/auth/login")          //(3)
+                    .sessionRegistry(sessionRegistry()); //(4);;
     }
 
     @Override
@@ -78,5 +88,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(userService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
+    }
+
+    @Bean
+    SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+    @Bean
+    public static ServletListenerRegistrationBean httpSessionEventPublisher() {	//(5)
+        return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
     }
 }

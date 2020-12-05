@@ -107,7 +107,7 @@ public class MessageService {
 
         Profile dbProfile = userService.findByEmail(profile.getEmail());
 
-        message.setRead(false);
+        message.setRead(true);
         message.setSentDateTime(LocalDateTime.now());
 
         message.getProfiles().add(dbProfile);

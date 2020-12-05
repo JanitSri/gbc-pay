@@ -120,10 +120,10 @@ public class AdminDashboardController {
     }
 
     @GetMapping({"users", "users.html", "users/{userId}", "users.html/{userId}"})
-    public String getAdminUsersPage(Model model, @PathVariable(name="userId", required = false) Long userId,
+    public String getAllUsersPage(Model model, @PathVariable(name="userId", required = false) Long userId,
                                     RedirectAttributes ra){
 
-        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+        Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
 
         if(userId != null){
             if(currProfile == null || currProfile.getId().equals(userId)){
@@ -162,7 +162,7 @@ public class AdminDashboardController {
 
         System.out.println("ADMIN --- Deleting Message with the id: " + messageId);
 
-        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+        Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
 
         if(messageId == null || messageService.getMessageById(currProfile, messageId) == null){
             ra.addFlashAttribute("error", "Message could not be deleted.");
@@ -180,7 +180,7 @@ public class AdminDashboardController {
                                  RedirectAttributes ra){
         System.out.println("ADMIN --- Replying to Message " + messageId);
 
-        Profile currProfile = (Profile)(model.getAttribute("currentProfile"));
+        Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
 
         if(messageId == null || messageService.getMessageById(currProfile, messageId) == null){
             ra.addFlashAttribute("error", "Message could not be deleted.");
@@ -210,8 +210,50 @@ public class AdminDashboardController {
     }
 
 
+
+
     @GetMapping({"support", "support.html"})
     public String getAdminSupportPage(){
         return "dashboard/support";
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

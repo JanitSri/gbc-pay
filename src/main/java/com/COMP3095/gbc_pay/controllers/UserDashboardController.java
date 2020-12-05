@@ -269,7 +269,6 @@ public class UserDashboardController {
         return "redirect:/dashboard/inbox";
     }
 
-
     @GetMapping({"support", "support.html"})
     @PreAuthorize("hasRole('ROLE_USER')")
     public String getSupportPage(@ModelAttribute("message") Message message){

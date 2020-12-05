@@ -3,6 +3,7 @@ package com.COMP3095.gbc_pay.services.dashboard.admin;
 import com.COMP3095.gbc_pay.models.Address;
 import com.COMP3095.gbc_pay.models.Profile;
 import com.COMP3095.gbc_pay.models.User;
+import com.COMP3095.gbc_pay.security.SessionUtils;
 import com.COMP3095.gbc_pay.services.user.RoleService;
 import com.COMP3095.gbc_pay.services.user.UserDetailsImp;
 import com.COMP3095.gbc_pay.services.user.UserService;
@@ -18,10 +19,12 @@ public class AdminProfileService {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final SessionUtils sessionUtils;
 
-    public AdminProfileService(UserService userService, RoleService roleService) {
+    public AdminProfileService(UserService userService, RoleService roleService, SessionUtils sessionUtils) {
         this.userService = userService;
         this.roleService = roleService;
+        this.sessionUtils = sessionUtils;
     }
 
     public Profile getAuthenticatedAdminProfile(){
@@ -59,6 +62,8 @@ public class AdminProfileService {
         if(profile == null){
             return false;
         }
+
+        sessionUtils.expireUserSession(profile.getId());
 
         userService.deleteProfile(profile);
         return true;
