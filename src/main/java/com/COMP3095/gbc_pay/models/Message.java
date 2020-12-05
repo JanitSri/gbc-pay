@@ -1,3 +1,12 @@
+/* *********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 3
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: December 05, 2020
+ * Description: Class for the Message entity.
+ ******************************************************************************** */
+
 package com.COMP3095.gbc_pay.models;
 
 import javax.persistence.*;
@@ -104,6 +113,14 @@ public class Message {
         this.replyMessageBody = replyMessageBody;
     }
 
+    public boolean isHasReply() {
+        return hasReply;
+    }
+
+    public void setHasReply(boolean hasReply) {
+        this.hasReply = hasReply;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,13 +134,5 @@ public class Message {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
-    }
-
-    public boolean isHasReply() {
-        return hasReply;
-    }
-
-    public void setHasReply(boolean hasReply) {
-        this.hasReply = hasReply;
     }
 }

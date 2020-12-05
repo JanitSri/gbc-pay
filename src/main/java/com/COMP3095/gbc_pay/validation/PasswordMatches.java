@@ -1,3 +1,12 @@
+/* *********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 3
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: December 05, 2020
+ * Description: Custom validator to check if passwords matches using annotation.
+ ******************************************************************************** */
+
 package com.COMP3095.gbc_pay.validation;
 
 import javax.validation.Constraint;

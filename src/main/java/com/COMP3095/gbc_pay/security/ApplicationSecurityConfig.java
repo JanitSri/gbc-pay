@@ -1,3 +1,12 @@
+/* *********************************************************************************
+ * Project: GBC PAY - The Raptors
+ * Assignment: Assignment 3
+ * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
+ * Student Number: 101229102, 101186743, 101028504
+ * Date: December 05, 2020
+ * Description: Application security configuration class used by Spring security.
+ ******************************************************************************** */
+
 package com.COMP3095.gbc_pay.security;
 
 import com.COMP3095.gbc_pay.services.user.UserService;
@@ -71,10 +80,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sameOrigin()
                 .and()
                     .sessionManagement()
-                    .maximumSessions(100)               //(1)
-                    .maxSessionsPreventsLogin(false)    //(2)
-                    .expiredUrl("/auth/login")          //(3)
-                    .sessionRegistry(sessionRegistry()); //(4);;
+                    .maximumSessions(-1)
+                    .maxSessionsPreventsLogin(false)
+                    .expiredUrl("/login")
+                    .sessionRegistry(sessionRegistry());
     }
 
     @Override
@@ -94,8 +103,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
+
     @Bean
-    public static ServletListenerRegistrationBean httpSessionEventPublisher() {	//(5)
+    public static ServletListenerRegistrationBean httpSessionEventPublisher() {
         return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
     }
 }
