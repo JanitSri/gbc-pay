@@ -1,18 +1,20 @@
 package com.COMP3095.gbc_pay.services.dashboard.admin;
 
-import com.COMP3095.gbc_pay.models.Address;
-import com.COMP3095.gbc_pay.models.Profile;
-import com.COMP3095.gbc_pay.models.User;
+import com.COMP3095.gbc_pay.models.*;
 import com.COMP3095.gbc_pay.security.SessionUtils;
+import com.COMP3095.gbc_pay.services.account.PasswordResetService;
 import com.COMP3095.gbc_pay.services.user.RoleService;
 import com.COMP3095.gbc_pay.services.user.UserDetailsImp;
 import com.COMP3095.gbc_pay.services.user.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AdminProfileService {
@@ -20,11 +22,16 @@ public class AdminProfileService {
     private final UserService userService;
     private final RoleService roleService;
     private final SessionUtils sessionUtils;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordResetService passwordResetService;
 
-    public AdminProfileService(UserService userService, RoleService roleService, SessionUtils sessionUtils) {
+    public AdminProfileService(UserService userService, RoleService roleService, SessionUtils sessionUtils,
+                               PasswordEncoder passwordEncoder, PasswordResetService passwordResetService) {
         this.userService = userService;
         this.roleService = roleService;
         this.sessionUtils = sessionUtils;
+        this.passwordEncoder = passwordEncoder;
+        this.passwordResetService = passwordResetService;
     }
 
     public Profile getAuthenticatedAdminProfile(){
@@ -53,6 +60,10 @@ public class AdminProfileService {
 
     public List<Profile> getAllProfiles(){
         return userService.getAllProfiles();
+    }
+
+    public List<Profile> getAllAdminProfiles(){
+        return new ArrayList<>(roleService.getRole("ADMIN").getProfiles());
     }
 
     public boolean deleteProfile(Long profileId){
@@ -87,6 +98,45 @@ public class AdminProfileService {
         }
 
         userService.saveUser(existingUser);
+    }
+
+    public boolean addAdminProfile(Profile newProfile, User newUser, Address newAddress){
+
+        Profile profile = userService.findByEmail(newProfile.getEmail());
+
+        if(profile != null){
+            return false;
+        }
+
+        newAddress.setDefaultBilling(false);
+        newAddress.setDefaultShipping(false);
+
+        newProfile.setEmailVerified(true);
+
+        final String tempPassword = UUID.randomUUID().toString().replace("-", "");
+        newProfile.setPassword(passwordEncoder.encode(tempPassword));
+
+        newProfile.setAddress(newAddress);
+        newAddress.setProfile(newProfile);
+
+        Role adminRole = roleService.getRole("ADMIN");
+
+        newProfile.getRoles().add(adminRole);
+        adminRole.getProfiles().add(newProfile);
+
+        newProfile.setUser(newUser);
+        newUser.getProfiles().add(newProfile);
+
+        userService.saveUser(newUser);
+
+        try {
+            passwordResetService.sendResetPasswordLink(newProfile);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 }
 

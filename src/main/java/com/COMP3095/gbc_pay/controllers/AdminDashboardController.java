@@ -210,31 +210,99 @@ public class AdminDashboardController {
     }
 
 
-
-
     @GetMapping({"support", "support.html"})
-    public String getAdminSupportPage(){
-        return "dashboard/support";
+    public String getAdminSupportPage(@ModelAttribute("user") @Valid User user, BindingResult userResult,
+                                      @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
+                                      @ModelAttribute("address") @Valid Address address, BindingResult addressResult,
+                                      Model model){
+
+
+        model.addAttribute("allAdmins", adminProfileService.getAllAdminProfiles());
+        return "dashboard/admin/support";
     }
 
 
+    @PostMapping({"support", "support.html"})
+    public String addNewAdminProfile(@ModelAttribute("user") @Valid User user, BindingResult userResult,
+                                     @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
+                                     @ModelAttribute("address") @Valid Address address, BindingResult addressResult,
+                                     Model model, RedirectAttributes ra){
 
+        System.out.println("Adding new ADMIN profile for " + profile.getEmail());
 
+        List<ObjectError> filteredProfileErrors = new ArrayList<>();
+        if(profileResult.getErrorCount() > 0){
+            for (ObjectError o: profileResult.getAllErrors()){
+                if( !Objects.equals(o.getDefaultMessage(), "Confirm Password cannot be empty")
+                        && !Objects.equals(o.getDefaultMessage(), "Must agree to terms of service")
+                        && !Objects.equals(o.getDefaultMessage(), "Password fields must match")){
+                    filteredProfileErrors.add(o);
+                }
+            }
+        }
 
+        if (userResult.hasErrors() || filteredProfileErrors.size() > 0 || addressResult.hasErrors()) {
 
+            List<String> profileErrorMessages = filteredProfileErrors.stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
 
+            model.addAttribute("profileFormError", profileErrorMessages);
 
+            List<String> userErrorMessages = userResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
 
+            model.addAttribute("userFormError", userErrorMessages);
 
+            List<String> addressErrorMessages = addressResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
 
+            model.addAttribute("addressFormError", addressErrorMessages);
 
+            model.addAttribute("allAdmins", adminProfileService.getAllAdminProfiles());
+            return "dashboard/admin/support";
+        }
 
+        if(!adminProfileService.addAdminProfile(profile, user, address)){
 
+            model.addAttribute("error", "Admin profile already exists.");
+            return "dashboard/admin/support";
+        }
 
+        ra.addFlashAttribute("createdAdmin",
+                "The admin profile for " + profile.getEmail() + " has been created. The admin cannot log in until " +
+                        "they set their password. A password reset link has been sent to " + profile.getEmail() + ".");
+        return "redirect:/dashboard/admin/support";
+    }
 
+    @PostMapping({"support/delete/{userId}", "support/delete/{userId}"})
+    public String deleteAdminProfile(@PathVariable(name="userId", required = false) Long userId,
+                                  RedirectAttributes ra){
 
+        Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
 
+        if(userId != null){
+            if(currProfile == null || currProfile.getId().equals(userId)){
+                ra.addFlashAttribute("error", "User with the id " +  userId + " could not be deleted.");
+                return "redirect:/dashboard/admin/support";
+            }else{
+                System.out.println("Deleting user with the id " + userId);
 
+                if(!adminProfileService.deleteProfile(userId)){
+                    ra.addFlashAttribute("error", "User with the id " +  userId + " could not be deleted.");
+                    return "redirect:/dashboard/admin/support";
+                }
+
+                ra.addFlashAttribute("profileDelete", "Admin profile with the id " +  userId + " has been deleted.");
+                return "redirect:/dashboard/admin/support";
+            }
+        }
+
+        ra.addFlashAttribute("error", "User could not be deleted.");
+        return "redirect:/dashboard/admin/support";
+    }
 }
 
 
