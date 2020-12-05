@@ -39,14 +39,8 @@
 
           <form th:action="@{/dashboard/admin/support}" method="post">
             <div>
-              <ul th:if="${userFormError!=null and !userFormError.isEmpty()}">
-                <li th:each="err : ${userFormError}" th:text="${err}" class="text-danger"></li>
-              </ul>
-              <ul th:if="${profileFormError!=null and !profileFormError.isEmpty()}">
-                <li th:each="err : ${profileFormError}" th:text="${err}" class="text-danger"></li>
-              </ul>
-              <ul th:if="${addressFormError!=null and !addressFormError.isEmpty()}">
-                <li th:each="err : ${addressFormError}" th:text="${err}" class="text-danger"></li>
+              <ul th:if="${formErrors!=null and !formErrors.isEmpty()}">
+                <li th:each="err : ${formErrors}" th:text="${err}" class="text-danger"></li>
               </ul>
             </div>
 

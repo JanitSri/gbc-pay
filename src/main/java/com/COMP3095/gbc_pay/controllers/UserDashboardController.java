@@ -13,6 +13,7 @@ import com.COMP3095.gbc_pay.models.*;
 import com.COMP3095.gbc_pay.services.dashboard.MessageService;
 import com.COMP3095.gbc_pay.services.dashboard.user.CreditProfileService;
 import com.COMP3095.gbc_pay.services.dashboard.user.UserProfileService;
+import com.COMP3095.gbc_pay.validation.CustomValidationService;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,12 +41,14 @@ public class UserDashboardController {
     private final UserProfileService userProfileService;
     private final CreditProfileService creditProfileService;
     private final MessageService messageService;
+    private final CustomValidationService customValidationService;
 
     public UserDashboardController(UserProfileService userProfileService, CreditProfileService creditProfileService,
-                                   MessageService messageService) {
+                                   MessageService messageService, CustomValidationService customValidationService) {
         this.userProfileService = userProfileService;
         this.creditProfileService = creditProfileService;
         this.messageService = messageService;
+        this.customValidationService = customValidationService;
     }
 
     @GetMapping({"", "/index.html", "index"})
@@ -123,44 +126,19 @@ public class UserDashboardController {
 
     @PostMapping({"my_profile", "my_profile.html"})
     @PreAuthorize("hasRole('ROLE_USER')")
-    public String updateProfile(HttpServletRequest request, RedirectAttributes ra, @ModelAttribute("user") @Valid User user,
+    public String updateProfile(RedirectAttributes ra, @ModelAttribute("user") @Valid User user,
                                 BindingResult userResult, @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
                                 @ModelAttribute("address") @Valid Address address, BindingResult addressResult, Model model){
 
 
         String updateEmail = ((Profile) Objects.requireNonNull(model.getAttribute("currentViewProfile"))).getEmail();
 
-        List<ObjectError> filteredProfileErrors = new ArrayList<>();
-        if(profileResult.getErrorCount() > 0){
-            for (ObjectError o: profileResult.getAllErrors()){
-                if( !Objects.equals(o.getDefaultMessage(), "Confirm Password cannot be empty")
-                        && !Objects.equals(o.getDefaultMessage(), "Must agree to terms of service")
-                        && !Objects.equals(o.getDefaultMessage(), "Password fields must match")){
-                    filteredProfileErrors.add(o);
-                }
-            }
-        }
 
-        if (userResult.hasErrors() || filteredProfileErrors.size() > 0 || addressResult.hasErrors()) {
+        List<String> formErrors = customValidationService.removeErrors(userResult, profileResult, addressResult);
 
-            List<String> profileErrorMessages = filteredProfileErrors.stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
+        if (formErrors.size() > 0) {
 
-            model.addAttribute("profileFormError", profileErrorMessages);
-
-            List<String> userErrorMessages = userResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            model.addAttribute("userFormError", userErrorMessages);
-
-            List<String> addressErrorMessages = addressResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            model.addAttribute("addressFormError", addressErrorMessages);
-
+            model.addAttribute("formErrors", formErrors);
             ra.addAttribute("updateEmail", updateEmail);
 
             return "dashboard/user/my_profile";

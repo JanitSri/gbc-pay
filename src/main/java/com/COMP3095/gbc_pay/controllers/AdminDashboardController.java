@@ -15,6 +15,7 @@ import com.COMP3095.gbc_pay.models.Profile;
 import com.COMP3095.gbc_pay.models.User;
 import com.COMP3095.gbc_pay.services.dashboard.MessageService;
 import com.COMP3095.gbc_pay.services.dashboard.admin.AdminProfileService;
+import com.COMP3095.gbc_pay.validation.CustomValidationService;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("DuplicatedCode")
+
 @Controller
 @RequestMapping({"/dashboard/admin", "/dashboard.html/admin"})
 @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -40,10 +41,13 @@ public class AdminDashboardController {
 
     private final AdminProfileService adminProfileService;
     private final MessageService messageService;
+    private final CustomValidationService customValidationService;
 
-    public AdminDashboardController(AdminProfileService adminProfileService, MessageService messageService) {
+    public AdminDashboardController(AdminProfileService adminProfileService, MessageService messageService,
+                                    CustomValidationService customValidationService) {
         this.adminProfileService = adminProfileService;
         this.messageService = messageService;
+        this.customValidationService = customValidationService;
     }
 
 
@@ -84,37 +88,11 @@ public class AdminDashboardController {
 
         System.out.println("Updating the ADMIN profile of " + profile.getEmail());
 
-        List<ObjectError> filteredProfileErrors = new ArrayList<>();
-        if(profileResult.getErrorCount() > 0){
-            for (ObjectError o: profileResult.getAllErrors()){
-                if( !Objects.equals(o.getDefaultMessage(), "Confirm Password cannot be empty")
-                        && !Objects.equals(o.getDefaultMessage(), "Must agree to terms of service")
-                        && !Objects.equals(o.getDefaultMessage(), "Password fields must match")){
-                    filteredProfileErrors.add(o);
-                }
-            }
-        }
 
-        if (userResult.hasErrors() || filteredProfileErrors.size() > 0 || addressResult.hasErrors()) {
+        List<String> formErrors = customValidationService.removeErrors(userResult, profileResult, addressResult);
 
-            List<String> profileErrorMessages = filteredProfileErrors.stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            model.addAttribute("profileFormError", profileErrorMessages);
-
-            List<String> userErrorMessages = userResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            model.addAttribute("userFormError", userErrorMessages);
-
-            List<String> addressErrorMessages = addressResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            model.addAttribute("addressFormError", addressErrorMessages);
-
+        if (formErrors.size() > 0) {
+            model.addAttribute("formErrors", formErrors);
             return "dashboard/admin/my_profile";
         }
 
@@ -238,37 +216,11 @@ public class AdminDashboardController {
 
         System.out.println("Adding new ADMIN profile for " + profile.getEmail());
 
-        List<ObjectError> filteredProfileErrors = new ArrayList<>();
-        if(profileResult.getErrorCount() > 0){
-            for (ObjectError o: profileResult.getAllErrors()){
-                if( !Objects.equals(o.getDefaultMessage(), "Confirm Password cannot be empty")
-                        && !Objects.equals(o.getDefaultMessage(), "Must agree to terms of service")
-                        && !Objects.equals(o.getDefaultMessage(), "Password fields must match")){
-                    filteredProfileErrors.add(o);
-                }
-            }
-        }
+        List<String> formErrors = customValidationService.removeErrors(userResult, profileResult, addressResult);
 
-        if (userResult.hasErrors() || filteredProfileErrors.size() > 0 || addressResult.hasErrors()) {
+        if (formErrors.size() > 0) {
 
-            List<String> profileErrorMessages = filteredProfileErrors.stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            model.addAttribute("profileFormError", profileErrorMessages);
-
-            List<String> userErrorMessages = userResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            model.addAttribute("userFormError", userErrorMessages);
-
-            List<String> addressErrorMessages = addressResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-
-            model.addAttribute("addressFormError", addressErrorMessages);
-
+            model.addAttribute("formErrors", formErrors);
             model.addAttribute("allAdmins", adminProfileService.getAllAdminProfiles());
             return "dashboard/admin/support";
         }
