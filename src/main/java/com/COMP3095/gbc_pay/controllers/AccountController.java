@@ -36,18 +36,33 @@ public class AccountController {
     private final PasswordResetService passwordResetService;
 
     public AccountController(RegisterService registerService, PasswordResetService passwordResetService) {
-
         this.registerService = registerService;
         this.passwordResetService = passwordResetService;
     }
 
+    /**
+     *
+     * Get the custom login page.
+     *
+     * @return
+     *  Login page.
+     *
+     */
     @GetMapping({"/", "/login.html", "/login"})
     public String getLogin() {
         return "account/login";
     }
 
+    /**
+     *
+     * Custom handling of login error.
+     *
+     * @return
+     *  Redirect back to login page.
+     *
+     */
     @PostMapping("/fail_login")
-    public String handleLoginError(Model model, @RequestBody MultiValueMap<String, String> formData,
+    public String handleLoginError(@RequestBody MultiValueMap<String, String> formData,
                                    RedirectAttributes ra) {
 
         String password = formData.get("password").get(0);
@@ -59,12 +74,28 @@ public class AccountController {
         return "redirect:/login";
     }
 
+    /**
+     *
+     * Custom handling of users that try to access pages without the proper authorization.
+     *
+     * @return
+     *  Redirect back to the login page.
+     *
+     */
     @GetMapping("/denied_login")
     public String handleAccessDenied(RedirectAttributes ra) {
         ra.addFlashAttribute("error", "You have to login to access that page.");
         return "redirect:/login";
     }
 
+    /**
+     *
+     * GET route for logout, directs back to the login page.
+     *
+     * @return
+     *  Login page.
+     *
+     */
     @GetMapping({"/logout.html", "/logout"})
     public String getLogout(HttpSession session, SessionStatus status) {
         status.setComplete();
@@ -72,12 +103,29 @@ public class AccountController {
         return "account/login";
     }
 
+    /**
+     *
+     * GET route to the user registration page.
+     *
+     * @return
+     *  Registration page.
+     *
+     */
     @GetMapping({"/register.html", "/register"})
     public String getRegisterForm(@ModelAttribute("user") User user, @ModelAttribute("profile") Profile profile,
                                   @ModelAttribute("address") Address address) {
         return "account/register";
     }
 
+    /**
+     *
+     *  POST endpoint for the registration point with form validation.
+     *
+     * @return
+     *  Registration page on failure.
+     *  Login page on success.
+     *
+     */
     @PostMapping({"/register.html", "/register"})
     public String postRegisterForm(@ModelAttribute("user") @Valid User user, BindingResult userResult,
                                    @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
@@ -124,6 +172,14 @@ public class AccountController {
         return "redirect:/login";
     }
 
+    /**
+     *
+     * Endpoint for email verification link with token validation.
+     *
+     * @return
+     *  Redirect back to the login page.
+     *
+     */
     @GetMapping({"/confirm.html", "/confirm"})
     public String getConfirmMail(@RequestParam("token") String token, RedirectAttributes ra) {
         if (registerService.enableUser(token)) {
@@ -134,11 +190,28 @@ public class AccountController {
         return "redirect:/login";
     }
 
+    /**
+     *
+     * GET endpoint for forget password page.
+     *
+     * @return
+     *  Forget password page.
+     *
+     */
     @GetMapping({"/forgot_password.html", "/forgot_password"})
     public String getForgotPassword(@ModelAttribute("profile") Profile profile) {
         return "account/forgot_password";
     }
 
+    /**
+     *
+     * POST endpoint for the forget password form with email validation.
+     *
+     * @return
+     *  Forget password page on failure.
+     *  Login page on success.
+     *
+     */
     @PostMapping({"/forgot_password.html", "/forgot_password"})
     public String sendForgotPassword(@ModelAttribute("profile") @Valid Profile profile, BindingResult result, Model model,
                                      RedirectAttributes ra) {
@@ -164,6 +237,15 @@ public class AccountController {
         return "redirect:/login";
     }
 
+    /**
+     *
+     * GET endpoint for the password reset page with token validation.
+     *
+     * @return
+     *  Login page on invalid token.
+     *  Reset password page on valida token.
+     *
+     */
     @GetMapping({"/reset_password.html", "/reset_password"})
     public String getResetPassword(@RequestParam("token") String token, @ModelAttribute("profile") Profile profile, Model model,
                                    RedirectAttributes ra) {
@@ -177,6 +259,15 @@ public class AccountController {
         return "account/reset_password";
     }
 
+    /**
+     *
+     * POST endpoint for the the reset password with password validation.
+     *
+     * @return
+     *  Reset password page on failure.
+     *  Redirect to the login page on success.
+     *
+     */
     @PostMapping({"/reset_password.html", "/reset_password"})
     public String postResetPassword(@RequestParam("token") String token, @ModelAttribute("profile") @Valid Profile profile,
                                     BindingResult result, RedirectAttributes ra, Model model) {

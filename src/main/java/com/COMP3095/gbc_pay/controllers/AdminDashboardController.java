@@ -16,21 +16,16 @@ import com.COMP3095.gbc_pay.models.User;
 import com.COMP3095.gbc_pay.services.dashboard.MessageService;
 import com.COMP3095.gbc_pay.services.dashboard.admin.AdminProfileService;
 import com.COMP3095.gbc_pay.validation.CustomValidationService;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 @Controller
@@ -50,7 +45,14 @@ public class AdminDashboardController {
         this.customValidationService = customValidationService;
     }
 
-
+    /**
+     *
+     * GET endpoint for the dashboard home page for ADMIN roles.
+     *
+     * @return
+     *  Dashboard Index page (home page).
+     *
+     */
     @GetMapping({"", "/index.html", "index"})
     public String getIndexPage(Model model){
         model.addAttribute("currentProfile", adminProfileService.getAuthenticatedAdminProfile());
@@ -67,7 +69,14 @@ public class AdminDashboardController {
         return "dashboard/admin/index";
     }
 
-
+    /**
+     *
+     * GET endpoint for the My Profile page.
+     *
+     * @return
+     *  My Profile page.
+     *
+     */
     @GetMapping({"my_profile", "my_profile.html"})
     public String getAdminMyProfilePage(Model model){
 
@@ -80,14 +89,19 @@ public class AdminDashboardController {
         return "dashboard/admin/my_profile";
     }
 
+    /**
+     *
+     * POST endpoint ot update admin profile.
+     *
+     * @return
+     *  My profile page on success and failure.
+     *
+     */
     @PostMapping({"my_profile", "my_profile.html"})
     public String updateAdminProfile(@ModelAttribute("user") @Valid User user, BindingResult userResult,
                                      @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
                                      @ModelAttribute("address") @Valid Address address, BindingResult addressResult,
                                      Model model, RedirectAttributes ra){
-
-        System.out.println("Updating the ADMIN profile of " + profile.getEmail());
-
 
         List<String> formErrors = customValidationService.removeErrors(userResult, profileResult, addressResult);
 
@@ -105,6 +119,15 @@ public class AdminDashboardController {
         return "redirect:/dashboard/admin/my_profile";
     }
 
+    /**
+     *
+     * GET endpoint for the Users page.
+     * GET endpoint to delete users with user id.
+     *
+     * @return
+     *  User page on success and failure.
+     *
+     */
     @GetMapping({"users", "users.html", "users/{userId}", "users.html/{userId}"})
     public String getAllUsersPage(Model model, @PathVariable(name="userId", required = false) Long userId,
                                     RedirectAttributes ra){
@@ -112,27 +135,27 @@ public class AdminDashboardController {
         Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
 
         if(userId != null){
-            if(currProfile == null || currProfile.getId().equals(userId)){
+            if(currProfile == null || currProfile.getId().equals(userId) || !adminProfileService.deleteProfile(userId)){
                 ra.addFlashAttribute("userDeleteError", "User with the id " +  userId + " could not be deleted.");
-                return "redirect:/dashboard/admin/users";
             }else{
-                System.out.println("Deleting user with the id " + userId);
-
-                if(!adminProfileService.deleteProfile(userId)){
-                    ra.addFlashAttribute("userDeleteError", "User with the id " +  userId + " could not be deleted.");
-                    return "redirect:/dashboard/admin/users";
-                }
-
                 ra.addFlashAttribute("userDelete", "User with the id " +  userId + " has been deleted.");
                 model.addAttribute("currentProfile", adminProfileService.getAuthenticatedAdminProfile());
-                return "redirect:/dashboard/admin/users";
             }
+            return "redirect:/dashboard/admin/users";
         }
 
         model.addAttribute("allUsers", adminProfileService.getAllProfiles());
         return "dashboard/admin/users";
     }
 
+    /**
+     *
+     *  GET endpoint for the inbox page
+     *
+     * @return
+     *  Inbox page.
+     *
+     */
     @GetMapping({"inbox", "inbox.html"})
     public String getInboxPage(Model model){
         Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
@@ -142,29 +165,44 @@ public class AdminDashboardController {
         return "dashboard/admin/inbox";
     }
 
+    /**
+     *
+     * GET endpoint to delete message from the inbox using the message id.
+     *
+     * @return
+     *  Inbox page on success or failure.
+     *
+     */
     @GetMapping({"inbox/delete/{messageId}", "inbox.html/delete/{messageId}"})
     public String deleteMessage(@PathVariable(name="messageId", required = false) Integer messageId,
                                 RedirectAttributes ra, Model model){
-
-        System.out.println("ADMIN --- Deleting Message with the id: " + messageId);
 
         Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
 
         if(messageId == null || messageService.getMessageById(currProfile, messageId) == null){
             ra.addFlashAttribute("error", "Message could not be deleted.");
+        }else{
+            messageService.deleteMessage(currProfile, messageId);
+            ra.addFlashAttribute("deleteMessage", "Message with ticket number " + messageId + " has been deleted.");
         }
 
-        messageService.deleteMessage(currProfile, messageId);
-
         model.addAttribute("currentProfile", adminProfileService.getAuthenticatedAdminProfile());
-        ra.addFlashAttribute("deleteMessage", "Message with ticket number " + messageId + " has been deleted.");
+
         return "redirect:/dashboard/admin/inbox";
     }
 
+    /**
+     *
+     * GET endpoint for the reply page using the message id.
+     *
+     * @return
+     *  Reply page on success.
+     *  Inbox page on failure.
+     *
+     */
     @GetMapping({"inbox/reply/{messageId}", "inbox.html/reply/{messageId}"})
     public String getReadMessage(@PathVariable(name="messageId", required = false) Integer messageId, Model model,
                                  RedirectAttributes ra){
-        System.out.println("ADMIN --- Replying to Message " + messageId);
 
         Profile currProfile = adminProfileService.getAuthenticatedAdminProfile();
 
@@ -179,10 +217,18 @@ public class AdminDashboardController {
         return "dashboard/admin/reply";
     }
 
+    /**
+     *
+     * POST endpoint for the reply page. Reply to a user's support message.
+     *
+     * @return
+     *  Reply page on failure.
+     *  Inbox page on success.
+     *
+     */
     @PostMapping({"inbox/reply", "inbox.html/reply"})
     public String sendReplyMessage(Model model, RedirectAttributes ra, @ModelAttribute("message") @Valid Message message,
                                    BindingResult result){
-        System.out.println("ADMIN --- Sending Message with ticket number " + message.getId());
 
         if(result.hasFieldErrors("replyMessageBody")){
             return "dashboard/admin/reply";
@@ -195,7 +241,14 @@ public class AdminDashboardController {
         return "redirect:/dashboard/admin/inbox";
     }
 
-
+    /**
+     *
+     * GET endpoint for the support page.
+     *
+     * @return
+     *  Support page.
+     *
+     */
     @GetMapping({"support", "support.html"})
     public String getAdminSupportPage(@ModelAttribute("user") @Valid User user, BindingResult userResult,
                                       @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
@@ -207,14 +260,19 @@ public class AdminDashboardController {
         return "dashboard/admin/support";
     }
 
-
+    /**
+     *
+     * POST endpoint for the support page (adding ADMIN profiles).
+     *
+     * @return
+     *  Support page on success and failure.
+     *
+     */
     @PostMapping({"support", "support.html"})
     public String addNewAdminProfile(@ModelAttribute("user") @Valid User user, BindingResult userResult,
                                      @ModelAttribute("profile") @Valid Profile profile, BindingResult profileResult,
                                      @ModelAttribute("address") @Valid Address address, BindingResult addressResult,
                                      Model model, RedirectAttributes ra){
-
-        System.out.println("Adding new ADMIN profile for " + profile.getEmail());
 
         List<String> formErrors = customValidationService.removeErrors(userResult, profileResult, addressResult);
 
@@ -237,6 +295,14 @@ public class AdminDashboardController {
         return "redirect:/dashboard/admin/support";
     }
 
+    /**
+     *
+     * POST endpoint for deleting ADMIN profiles.
+     *
+     * @return
+     *  Support page on success and failure.
+     *
+     */
     @PostMapping({"support/delete/{userId}", "support/delete/{userId}"})
     public String deleteAdminProfile(@PathVariable(name="userId", required = false) Long userId,
                                   RedirectAttributes ra){
@@ -248,7 +314,6 @@ public class AdminDashboardController {
                 ra.addFlashAttribute("error", "User with the id " +  userId + " could not be deleted.");
                 return "redirect:/dashboard/admin/support";
             }else{
-                System.out.println("Deleting user with the id " + userId);
 
                 if(!adminProfileService.deleteProfile(userId)){
                     ra.addFlashAttribute("error", "User with the id " +  userId + " could not be deleted.");

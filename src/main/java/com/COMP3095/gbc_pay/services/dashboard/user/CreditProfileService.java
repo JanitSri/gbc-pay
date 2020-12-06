@@ -30,7 +30,7 @@ public class CreditProfileService {
                 .stream()
                 .filter(credit1 -> credit1.getId() == Integer.parseInt(cardIdNumber))
                 .findFirst()
-                .get();
+                .orElse(null);
     }
 
     public Credit getCreditByCardNumber(Profile profile, Credit card){

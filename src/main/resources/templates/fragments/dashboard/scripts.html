@@ -19,10 +19,10 @@
             crossorigin="anonymous"></script>
 
     <script>
-        function upload(messageId){
-            const URL = "http://localhost:8081/dashboard/inbox/read/"+messageId;
+        function upload(messageId, port){
+            const URL = `http://localhost:${port}/dashboard/inbox/read/${messageId}`;
             fetch(URL)
-            .then(value => console.log("request has beend sent"))
+            .then(value => console.log("request has been sent"))
             .catch(reason => console.log("error in sending request " + reason));
 
             let element = document.getElementById('subject-' + messageId);

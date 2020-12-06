@@ -17,6 +17,13 @@
           <span aria-hidden="true">&times;</span>
         </span>
   </div>
+  <div class="alert alert-info alert-dismissible fade show" role="alert"
+       th:if="${error}">
+    <span th:text="${error}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Credit Profile Information</h1>
   </div>
