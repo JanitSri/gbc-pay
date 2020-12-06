@@ -141,7 +141,6 @@ public class MessageService {
         Message dbMessage = messageRepository.findById(message.getId()).orElse(null);
 
         if(dbMessage != null && dbMessage.getReplyMessageBody() == null){
-            System.out.println("Message has been found");
             dbMessage.setHasReply(true);
             dbMessage.setRead(false);
             dbMessage.setReplyMessageBody(message.getReplyMessageBody());

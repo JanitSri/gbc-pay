@@ -28,13 +28,13 @@ public class RegisterService {
 
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
-    private final Email email;
+    private final Email<VerificationToken> email;
     private final EmailService emailService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
     public RegisterService(UserService userService, VerificationTokenService verificationTokenService,
-                           @Qualifier("verificationEmail") Email email, EmailService emailService, RoleService roleService,
+                           @Qualifier("verificationEmail") Email<VerificationToken> email, EmailService emailService, RoleService roleService,
                            PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;

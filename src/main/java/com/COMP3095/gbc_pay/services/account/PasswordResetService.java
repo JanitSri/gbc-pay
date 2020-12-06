@@ -28,11 +28,11 @@ public class PasswordResetService {
     private final UserService userService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final EmailService emailService;
-    private final Email email;
+    private final Email<PasswordResetToken> email;
     private final PasswordEncoder passwordEncoder;
 
     public PasswordResetService(UserService userService, PasswordResetTokenService passwordResetTokenService,
-                                EmailService emailService, @Qualifier("passwordResetEmail") Email email,
+                                EmailService emailService, @Qualifier("passwordResetEmail") Email<PasswordResetToken> email,
                                 PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordResetTokenService = passwordResetTokenService;

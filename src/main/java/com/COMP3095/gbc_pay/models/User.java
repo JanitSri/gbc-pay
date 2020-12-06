@@ -12,6 +12,7 @@ package com.COMP3095.gbc_pay.models;
 
 
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -36,6 +37,7 @@ public class User {
 
     @NotNull(message = "Date of Birth cannot be empty")
     @Past(message = "Date of Birth should be in the past")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOfBirth;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
