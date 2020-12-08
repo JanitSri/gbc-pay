@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <th:block th:insert="fragments/head.html :: head('Login','Login to use the secure GBC Pay application.')"></th:block>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body th:replace="fragments/account.html :: bodyContent(~{::div})">
+  <div class="col-lg-6">
+    <div class="p-5">
+      <div id="recaptcha-error"></div>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert"
+           th:if="${error}">
+        <span th:text="${error}" th:remove="tag"></span>
+        <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+      </div>
+      <div class="alert alert-primary alert-dismissible fade show" role="alert"
+           th:if="${successfulRegister}">
+        <span th:text="${successfulRegister}" th:remove="tag"></span>
+        <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+      </div>
+      <div class="alert alert-primary alert-dismissible fade show" role="alert" th:if="${validToken}">
+        <span th:text="${validToken}" th:remove="tag"></span>
+        <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+      </div>
+      <div class="alert alert-primary alert-dismissible fade show" role="alert" th:if="${forgotPassword}">
+        <span th:text="${forgotPassword}" th:remove="tag"></span>
+        <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+      </div>
+      <div class="text-center">
+        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+      </div>
+      <form class="user" th:action="@{/login}" method="post" onsubmit="return googleCaptcha();">
+        <div class="form-group">
+          <input type="text" class="form-control form-control-user" placeholder="Email Address" id="username" name="username">
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control form-control-user" placeholder="Password" id="password" name="password">
+        </div>
+        <div class="form-group ml-3">
+          <div class="g-recaptcha" data-sitekey="6LdWp98ZAAAAAM0nI0fXFszmR3AcAyQt41RGL5bn" data-callback="verifyCaptcha"></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-user btn-block">
+          Login
+        </button>
+        <hr>
+      </form>
+      <hr>
+      <div class="text-center">
+        <a class="small" th:href="@{/forgot_password}">Forgot Password?</a>
+      </div>
+      <div class="text-center">
+        <a class="small" th:href="@{/register}">Create an Account!</a>
+      </div>
+    </div>
+    <script th:src="@{/js/robot.js}" async defer></script>
+  </div>
+</body>
+</html>

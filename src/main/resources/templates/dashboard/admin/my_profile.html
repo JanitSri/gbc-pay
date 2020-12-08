@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head('My Profile - Admin', 'Admin\'s profile of GBC Pay.')"></head>
+<body th:replace="fragments/dashboard/body.html :: bodyContent(~{::div})">
+<div class="container-fluid">
+  <div class="alert alert-success alert-dismissible fade show" role="alert"
+       th:if="${updatedProfile}">
+    <span th:text="${updatedProfile}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">My Profile</h1>
+  </div>
+  <div class="row justify-content-center align-self-center">
+
+    <div class="col-lg-8">
+      <div class="box1 card shadow mb-4">
+        <div class="card-header py-3">
+          <p class="m-0 font-weight-bold text-primary h4">Add/Edit Profile</p>
+        </div>
+        <div class="card-body">
+
+          <form th:action="@{/dashboard/admin/my_profile}" method="post">
+            <div>
+              <ul th:if="${formErrors!=null and !formErrors.isEmpty()}">
+                <li th:each="err : ${formErrors}" th:text="${err}" class="text-danger"></li>
+              </ul>
+            </div>
+            <div class="form-row" th:object="${user}">
+              <div class="form-group col-md-4">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" name="update-firstName"
+                       th:field="*{firstName}">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" id="lastName" name="update-lastName"
+                       th:field="*{lastName}">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="dob" class="col-form-label">Date of Birth</label>
+                <input class="form-control" type="date" id="dob" name="update-dob"
+                       th:field="*{dateOfBirth}">
+              </div>
+            </div>
+
+            <div class="form-row" th:object="${profile}">
+              <div class="form-group col-md-6">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" name="update-email"
+                       th:field="*{email}">
+              </div>
+            </div>
+
+            <div th:object="${address}">
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="street">Street</label>
+                  <input type="text" class="form-control" id="street" name="update-street"
+                         th:field="*{street}">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="city" class="col-form-label">City</label>
+                  <input class="form-control" id="city" name="update-country"
+                         th:field="*{city}">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="country" class="col-form-label">Country</label>
+                  <input class="form-control" id="country" name="update-country"
+                         th:field="*{country}">
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="box1 card shadow mb-4">
+        <div class="card-header py-3">
+          <p class="m-0 font-weight-bold text-primary h4">Current Profile</p>
+        </div>
+
+        <div class="card-body overflow-auto" style="max-height: 400px;">
+            <div class="mb-4">
+
+              <div class="row justify-content-center">
+                <div class="col align-items-center">
+                  <p class="font-weight-bold text-right pr-2">First Name:</p>
+                </div>
+                <div class="col">
+                  <p th:text="${currentProfile.getUser().getFirstName()}"></p>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <div class="col align-items-center">
+                  <p class="font-weight-bold text-right pr-2">Last Name:</p>
+                </div>
+                <div class="col">
+                  <p th:text="${currentProfile.getUser().getLastName()}"></p>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <div class="col align-items-center">
+                  <p class="font-weight-bold text-right pr-2">Email:</p>
+                </div>
+                <div class="col">
+                  <p th:text="${currentProfile.getEmail()}"></p>
+                </div>
+              </div>
+
+
+              <div class="row justify-content-center">
+                <div class="col align-items-center">
+                  <p class="font-weight-bold text-right pr-2">D.O.B.:</p>
+                </div>
+                <div class="col">
+                  <p th:text="${currentProfile.getUser().getDateOfBirth()}"></p>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <div class="col align-items-center">
+                  <p class="font-weight-bold text-right pr-2">Address:</p>
+                </div>
+                <div class="col">
+                  <p th:text="${currentProfile.getAddress().getStreet()}"></p>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <div class="col align-items-center">
+                  <p class="font-weight-bold text-right pr-2">City:</p>
+                </div>
+                <div class="col">
+                  <p th:text="${currentProfile.getAddress().getCity()}"></p>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <div class="col align-items-center">
+                  <p class="font-weight-bold text-right pr-2">Country:</p>
+                </div>
+                <div class="col">
+                  <p th:text="${currentProfile.getAddress().getCountry()}"></p>
+                </div>
+              </div>
+
+            </div>
+            <hr style="border-top:2px solid #8c8b8b;width:100%;text-align:left">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div th:replace="fragments/dashboard/logout.html :: logout"></div>
+<div th:replace="fragments/dashboard/scripts.html :: script"></div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" th:fragment="sidebar">
+        <a th:if="${!#authentication.getPrincipal().isAdminAccount()}"
+           class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/dashboard}">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">GBC Pay</div>
+        </a>
+
+        <a th:if="${#authentication.getPrincipal().isAdminAccount()}"
+           class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/dashboard/admin}">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">GBC Pay</div>
+        </a>
+
+        <hr class="sidebar-divider my-0">
+
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/my_profile' or
+        #httpServletRequest.getRequestURI() == '/dashboard/admin/my_profile' ? 'active':''}">
+            <span th:if="${!#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
+                <a class="nav-link" th:href="@{/dashboard/my_profile}">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+            </span>
+
+            <span th:if="${#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
+                <a class="nav-link" th:href="@{/dashboard/admin/my_profile}">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+            </span>
+        </li>
+
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/credit_profile' or
+        #httpServletRequest.getRequestURI() == '/dashboard/admin/users' ? 'active':''}">
+            <span th:if="${!#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
+                <a class="nav-link" th:href="@{/dashboard/credit_profile}">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Credit Profile</span>
+                </a>
+            </span>
+
+            <span th:if="${#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
+                <a class="nav-link" th:href="@{/dashboard/admin/users}">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </span>
+        </li>
+
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/inbox' or
+        #httpServletRequest.getRequestURI() == '/dashboard/admin/inbox'? 'active':''}">
+            <span th:if="${!#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
+                <a class="nav-link" th:href="@{/dashboard/inbox}">
+                    <i class="fas fa-inbox"></i>
+                    <span>Inbox</span>
+                </a>
+            </span>
+
+            <span th:if="${#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
+                <a class="nav-link" th:href="@{/dashboard/admin/inbox}">
+                    <i class="fas fa-inbox"></i>
+                    <span>Inbox</span>
+                </a>
+            </span>
+        </li>
+
+        <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard/support' or
+        #httpServletRequest.getRequestURI() == '/dashboard/admin/support'? 'active':''}">
+
+            <span th:if="${!#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
+                <a class="nav-link" th:href="@{/dashboard/support}">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Support</span>
+                </a>
+            </span>
+
+            <span th:if="${#authentication.getPrincipal().isAdminAccount()}" th:remove="tag">
+                <a class="nav-link" th:href="@{/dashboard/admin/support}">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Support</span>
+                </a>
+            </span>
+        </li>
+
+        <hr class="sidebar-divider d-none d-md-block">
+    </ul>
+</html>

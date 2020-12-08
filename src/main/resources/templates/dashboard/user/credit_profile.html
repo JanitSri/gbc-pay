@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head.html :: head('Credit Profile', 'Credit Profile of the client of GBC Pay.')"></head>
+<body th:replace="fragments/dashboard/body.html :: bodyContent(~{::div})">
+<div class="container-fluid">
+  <div class="alert alert-success alert-dismissible fade show" role="alert"
+       th:if="${updatedCreditProfile}">
+    <span th:text="${updatedCreditProfile}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
+  <div class="alert alert-info alert-dismissible fade show" role="alert"
+       th:if="${deletedCard}">
+    <span th:text="${deletedCard}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
+  <div class="alert alert-info alert-dismissible fade show" role="alert"
+       th:if="${error}">
+    <span th:text="${error}" th:remove="tag"></span>
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </span>
+  </div>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Credit Profile Information</h1>
+  </div>
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="box1 card shadow mb-4">
+        <div class="card-header py-3">
+          <p class="m-0 font-weight-bold text-primary h4">Add New Card</p>
+        </div>
+        <div class="card-body">
+          <form class="p-4" th:object="${card}" th:action="@{/dashboard/credit_profile}" method="post">
+            <div>
+              <ul th:if="${#fields.hasErrors('*')}">
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}" class="text-danger"></li>
+              </ul>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="name">Card Holder Name</label>
+                <input type="text" class="form-control" id="name" th:field="*{cardHolderName}">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="number">Credit Card Number</label>
+                <input type="text" class="form-control" id="number" th:field="*{cardHolderNumber}">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="expirationDate">Expiration Date</label>
+                <input class="form-control" type="text" id="expirationDate" th:field="*{expirationDate}">
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="cardType">Credit Card type</label>
+                <select id="cardType" class="form-control" th:field="*{cardType}">
+                  <option th:each="type : ${T(com.COMP3095.gbc_pay.models.CardType).values()}" th:value="${type}" th:text="${type.cardName}"
+                  th:selected="${defaultCardType == type}"></option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group mr-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="defaultCard" th:field="*{defaultCard}">
+                <label class="form-check-label" for="defaultCard" >
+                  Save as Default Card
+                </label>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary">Add/Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+      <div class="box2 card shadow mb-4">
+        <div class="card-header py-3">
+          <p class="m-0 font-weight-bold text-primary h4">Existing Cards List</p>
+        </div>
+        <div class="card-body">
+          <div class="card-body overflow-auto" style="max-height: 400px;">
+            <span th:each="card : ${currentProfile.getCredits()}" th:remove="tag">
+              <div class="mb-4">
+                <form th:action="@{/dashboard/credit_profile}" method="get">
+                  <input type="text" class="form-control-plaintext" th:value="${card.getId()}" name="cardIdNumber" hidden>
+                  <div class="font-weight-bold ml-4 form-group row">
+                    <label class="col-sm-5 col-form-label">Type</label>
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control-plaintext" th:value="${card.getCardType().getCardName()}"  readonly >
+                    </div>
+                  </div>
+
+                  <div class="font-weight-bold ml-4 form-group row">
+                    <label class="col-sm-5 col-form-label">Expiry:</label>
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control-plaintext" th:value="${card.getExpirationDate()}" readonly >
+                    </div>
+                  </div>
+
+                  <div class="font-weight-bold ml-4 form-group row">
+                    <label class="col-sm-5 col-form-label">Card Holder Name:</label>
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control-plaintext" th:value="${card.getCardHolderName()}" readonly >
+                    </div>
+                  </div>
+
+                  <div class="font-weight-bold ml-4 form-group row">
+                    <label class="col-sm-5 col-form-label">Card Number:</label>
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control-plaintext" th:value="${card.getCardHolderNumber()}"  readonly >
+                    </div>
+                  </div>
+
+                  <div class="font-weight-bold ml-4 form-group row">
+                    <label class="col-sm-5 col-form-label">Default Billing:</label>
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control-plaintext" th:value="${card.isDefaultCard()} ? 'Yes' : 'No'" readonly >
+                    </div>
+                  </div>
+
+                  <div>
+                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                    View Card
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div>
+                  <form th:action="@{/dashboard/credit_profile/delete}" method="post" th:id="${'deleteForm-' + card.getId()}">
+                    <input type="hidden" th:value="${card.getId()}" name="delete-id">
+                    <button type="submit" class="btn btn-danger btn-user btn-block"
+                            th:form="${'deleteForm-' + card.getId()}">Delete Card</button>
+                  </form>
+              </div>
+              <hr style="border-top:2px solid #8c8b8b;width:100%;text-align:left">
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+  <div th:replace="fragments/dashboard/logout.html :: logout"></div>
+  <div th:replace="fragments/dashboard/scripts.html :: script"></div>
+</body>
+</html>
