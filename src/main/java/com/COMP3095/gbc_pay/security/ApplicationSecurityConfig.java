@@ -1,12 +1,3 @@
-/* *********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 3
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: December 05, 2020
- * Description: Application security configuration class used by Spring security.
- ******************************************************************************** */
-
 package com.COMP3095.gbc_pay.security;
 
 import com.COMP3095.gbc_pay.services.user.UserService;

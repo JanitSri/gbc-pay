@@ -1,12 +1,3 @@
-/* *********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 3
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: December 05, 2020
- * Description: Service class to handle the password reset token from the repository.
- ******************************************************************************** */
-
 package com.COMP3095.gbc_pay.services.token;
 
 import com.COMP3095.gbc_pay.models.PasswordResetToken;

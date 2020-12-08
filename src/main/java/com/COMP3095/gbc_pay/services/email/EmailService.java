@@ -1,12 +1,3 @@
-/* *********************************************************************************
- * Project: GBC PAY - The Raptors
- * Assignment: Assignment 3
- * Author(s): Janit Sriganeshaelankovan, Shelton D'mello, Saif Bakhtaria
- * Student Number: 101229102, 101186743, 101028504
- * Date: December 05, 2020
- * Description: Service class to send emails to the user.
- ******************************************************************************** */
-
 package com.COMP3095.gbc_pay.services.email;
 
 import com.COMP3095.gbc_pay.models.Profile;

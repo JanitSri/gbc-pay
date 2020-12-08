@@ -17,3 +17,7 @@
     - Admin controls for the application 
     - Thymeleaf for templating (with Bootstrap)     
 
+<img src="./github_assets/login.PNG" width="300" height="200" alt="springboot_logo"/>
+<img src="/github_assets/register.PNG" width="300" height="200" alt="springsecurity_logo"/>
+<img src="/github_assets/user.PNG" width="300" height="200" alt="thymeleaf_logo"/>
+<img src="/github_assets/admin.PNG" width="300" height="200" alt="bootstrap_logo"/>
